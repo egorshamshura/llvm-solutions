@@ -136,6 +136,7 @@ std::pair<std::string, std::unordered_map<std::string, size_t>> InstructionParse
     }
     Instr_t instr = str2Instr.at(name);
     ++instr_cnt;
+    result += name + " ";
     switch (instr) {
     case Instr_t::ADD:
     case Instr_t::SUB:
@@ -147,7 +148,6 @@ std::pair<std::string, std::unordered_map<std::string, size_t>> InstructionParse
     case Instr_t::SUBi:
     case Instr_t::PUT_PIXEL:
     {
-      result += name + " ";
       input >> arg;
       result += arg + " ";
       input >> arg;
@@ -158,7 +158,6 @@ std::pair<std::string, std::unordered_map<std::string, size_t>> InstructionParse
     }
     case Instr_t::BR_COND:
     {
-      result += name + " ";
       input >> arg;
       result += arg + " ";
       input >> arg;
