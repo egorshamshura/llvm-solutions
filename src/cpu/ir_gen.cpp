@@ -6,9 +6,10 @@
 #include "llvm/ExecutionEngine/MCJIT.h"
 #include <llvm-18/llvm/Support/raw_ostream.h>
 #include "lib/sim.h"
+#include "llvm/IR/Verifier.h"
 
 using namespace llvm;
-
+bool ___temp = false;
 namespace hw
 {
 void IRGen::build(Binary& bin) 
@@ -45,9 +46,16 @@ void IRGen::build(Binary& bin)
       module->getOrInsertFunction("simFlush", simFlushType);
 
   std::unordered_map<uint32_t, BasicBlock*> BBMap;
+  std::vector<std::pair<size_t, std::string>> vs;
   for (auto &BB : bin.label2pc) {
+    vs.push_back({BB.second, BB.first});
+  }
+  std::sort(vs.begin(), vs.end(), [](std::pair<size_t, std::string>const& a, std::pair<size_t, std::string> const& b) -> bool {
+    return a.first < b.first;
+  });
+  for (auto &BB : vs) {
     outs() << BB.second << " " << BB.first << '\n';
-    BBMap[BB.second] = BasicBlock::Create(context, BB.first, mainFunc);
+    BBMap[BB.first] = BasicBlock::Create(context, BB.second, mainFunc);
   }
 
   std::unordered_map<std::string, FunctionCallee> FuncMap =
@@ -57,10 +65,11 @@ void IRGen::build(Binary& bin)
   builder.SetInsertPoint(BBMap[0]);
   for (auto& instr: bin.instructions)
   {
+    ___temp = false;
     instr->build_ir(PC, {builder, regFile, BBMap, FuncMap});
     ++PC;
-    auto BB = BBMap.find(PC - 1);
-    if (BB != BBMap.end()) {
+    auto BB = BBMap.find(PC);
+    if (BB != BBMap.end() && !___temp) {
       builder.CreateBr(BB->second);
       builder.SetInsertPoint(BB->second);
     }
@@ -70,6 +79,8 @@ void IRGen::build(Binary& bin)
 void IRGen::execute(CPU& cpu)
 {
   module->print(outs(), nullptr);
+  bool verif = verifyFunction(*mainFunc, &outs());
+  outs() << "[VERIFICATION] " << (!verif ? "OK\n\n" : "FAIL\n\n");
   LLVMInitializeNativeTarget();
   LLVMInitializeNativeAsmPrinter();
 

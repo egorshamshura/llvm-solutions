@@ -3,6 +3,8 @@
 #include "cpu/cpu.h"
 #include <llvm-18/llvm/Support/raw_ostream.h>
 
+extern bool ___temp;
+
 namespace
 {
 
@@ -135,7 +137,7 @@ void hw::SUBiInstr::execute(CPU& cpu)
 
 void hw::SUBiInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateStore(data.builder.CreateSub(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)),GEP2_32(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateSub(load(_r2, data.regFile, data.builder), data.builder.getInt32(_r3)),GEP2_32(_r1, data.regFile, data.builder));
 }
 
 hw::Instr_t hw::SUBiInstr::instr()
@@ -161,6 +163,7 @@ void hw::BR_CONDInstr::build_ir(uint32_t PC, ir_data data)
           data.builder.CreateTrunc(load(_r1, data.regFile, data.builder), data.builder.getInt1Ty()),
           data.BBMap[_r2], data.BBMap[PC + 1]);
       data.builder.SetInsertPoint(data.BBMap[PC + 1]);
+      ___temp = true;
 }
 
 void hw::PUT_PIXELInstr::execute(CPU& cpu)
