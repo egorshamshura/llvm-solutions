@@ -58,8 +58,8 @@ void IRGen::build(Binary& bin)
   for (auto& instr: bin.instructions)
   {
     instr->build_ir(PC, {builder, regFile, BBMap, FuncMap});
-    PC++;
-    auto BB = BBMap.find(PC);
+    ++PC;
+    auto BB = BBMap.find(PC - 1);
     if (BB != BBMap.end()) {
       builder.CreateBr(BB->second);
       builder.SetInsertPoint(BB->second);
