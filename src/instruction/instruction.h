@@ -33,6 +33,7 @@ enum class Instr_t
   PUT_PIXEL,
   BR_COND,
   FLUSH,
+  RAND,
   EXIT,
 };
 
@@ -48,6 +49,7 @@ static std::unordered_map<std::string, Instr_t> str2Instr = {
   {"PUT_PIXEL", Instr_t::PUT_PIXEL},
   {"BR_COND", Instr_t::BR_COND},
   {"FLUSH", Instr_t::FLUSH},
+  {"RAND", Instr_t::RAND},
   {"EXIT", Instr_t::EXIT},
 };
 static std::unordered_map<Instr_t, std::string> instr2Str;
@@ -160,6 +162,25 @@ struct BR_CONDInstr : UnaryOperator
   Instr_t instr() override;
   void build_ir(uint32_t, ir_data) override;
 };
+/* ---------------------- */
+
+/* ZeroArity instructions */
+struct ZeroArityOperator : Instruction
+{
+  ZeroArityOperator(uint32_t r1)
+    : _r1(r1) {}
+
+  uint32_t _r1;
+};
+
+struct RANDInstr : ZeroArityOperator
+{
+  using ZeroArityOperator::ZeroArityOperator;
+  void execute(CPU&) override;
+  Instr_t instr() override;
+  void build_ir(uint32_t, ir_data) override;
+};
+
 /* ------------------- */
 
 /* Invoke instructions */

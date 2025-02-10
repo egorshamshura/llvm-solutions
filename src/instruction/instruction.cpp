@@ -211,3 +211,19 @@ void hw::EXITInstr::build_ir(uint32_t PC, ir_data data)
 {
   data.builder.CreateRetVoid();
 }
+
+void hw::RANDInstr::execute(CPU& cpu)
+{
+  cpu.m_regFile[_r1] = static_cast<uint32_t>(simRand());
+}
+
+hw::Instr_t hw::RANDInstr::instr()
+{
+  return hw::Instr_t::RAND;
+}
+
+void hw::RANDInstr::build_ir(uint32_t PC, ir_data data)
+{
+  data.builder.CreateStore(data.builder.CreateCall(data.FuncMap.at("simRandFunc")), GEP2_32(_r1, data.regFile, data.builder));
+}
+

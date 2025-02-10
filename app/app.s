@@ -8,6 +8,8 @@ loop_y
 loop_x
     MUL x6 x3 x5
     SUBi x6 x6 16777216
+    RAND x8
+    ADD x6 x6 x8
     PUT_PIXEL x5 x2 x6
     INC_NEi x4 x5 512
     BR_COND x4 loop_x
