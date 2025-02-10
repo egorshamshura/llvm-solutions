@@ -9,6 +9,7 @@ namespace hw
 struct IRGen
 {
   void build(Binary&);
+  void execute(CPU&);
 
   llvm::LLVMContext context;
   llvm::Module *module;

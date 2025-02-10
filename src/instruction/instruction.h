@@ -12,6 +12,14 @@ namespace hw {
 
 struct CPU;
 
+struct ir_data
+{
+  IRBuilder<>& builder;
+  GlobalVariable *regFile;
+  std::unordered_map<uint32_t, BasicBlock*>& BBMap;
+  std::unordered_map<std::string, FunctionCallee>& FuncMap;
+};
+
 enum class Instr_t
 {
   ADD,
@@ -48,7 +56,7 @@ struct Instruction
 {
   virtual void execute(CPU&) = 0;
   virtual Instr_t instr() = 0;
-  //virtual void build_ir(IRBuilder<>&, uint32_t) = 0;
+  virtual void build_ir(uint32_t PC, ir_data) = 0;
 };
 
 /* Binary operations */
@@ -67,7 +75,7 @@ struct ADDInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  //void build_ir(IRBuilder<>&, uint32_t) override;
+  void build_ir(uint32_t, ir_data) override;
 };
 
 struct SUBInstr : BinaryOperator
@@ -75,7 +83,7 @@ struct SUBInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  //void build_ir(IRBuilder<>&, uint32_t) override;
+  void build_ir(uint32_t, ir_data) override;
 };
 
 struct MULInstr : BinaryOperator
@@ -83,7 +91,7 @@ struct MULInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  //void build_ir(IRBuilder<>&, uint32_t) override;
+  void build_ir(uint32_t, ir_data) override;
 };
 
 struct DIVInstr : BinaryOperator
@@ -91,7 +99,7 @@ struct DIVInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  //void build_ir(IRBuilder<>&, uint32_t) override;
+  void build_ir(uint32_t, ir_data) override;
 };
 
 struct REMInstr : BinaryOperator
@@ -99,7 +107,7 @@ struct REMInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  //void build_ir(IRBuilder<>&, uint32_t) override;
+  void build_ir(uint32_t, ir_data) override;
 };
 
 struct XORInstr : BinaryOperator
@@ -107,7 +115,7 @@ struct XORInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  //void build_ir(IRBuilder<>&, uint32_t) override;
+  void build_ir(uint32_t, ir_data) override;
 };
 
 struct INC_NEiInstr : BinaryOperator
@@ -115,7 +123,7 @@ struct INC_NEiInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  //void build_ir(IRBuilder<>&, uint32_t) override;
+  void build_ir(uint32_t, ir_data) override;
 };
 
 struct SUBiInstr : BinaryOperator
@@ -123,7 +131,7 @@ struct SUBiInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  //void build_ir(IRBuilder<>&, uint32_t) override;
+  void build_ir(uint32_t, ir_data) override;
 };
 
 struct PUT_PIXELInstr : BinaryOperator
@@ -131,7 +139,7 @@ struct PUT_PIXELInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  //void build_ir(IRBuilder<>&, uint32_t) override;
+  void build_ir(uint32_t, ir_data) override;
 };
 /* ---------------- */
 
@@ -150,7 +158,7 @@ struct BR_CONDInstr : UnaryOperator
   using UnaryOperator::UnaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  //void build_ir(IRBuilder<>&, uint32_t) override;
+  void build_ir(uint32_t, ir_data) override;
 };
 /* ------------------- */
 
@@ -162,14 +170,14 @@ struct FLUSHInstr : InvokeInst
 {
   void execute(CPU&) override;
   Instr_t instr() override;
-  //void build_ir(IRBuilder<>&, uint32_t) override;
+  void build_ir(uint32_t, ir_data) override;
 };
 
 struct EXITInstr : InvokeInst
 {
   void execute(CPU&) override;
   Instr_t instr() override;
-  //void build_ir(IRBuilder<>&, uint32_t) override;
+  void build_ir(uint32_t, ir_data) override;
 };
 
 }; // namespace hw

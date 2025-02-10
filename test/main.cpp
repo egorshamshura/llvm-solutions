@@ -1,4 +1,5 @@
 #include "cpu/cpu.h"
+#include "cpu/ir_gen.h"
 #include "parser/instruction_parser.h"
 #include <fstream>
 #include <ios>
@@ -9,5 +10,7 @@ int main()
   std::ifstream str("../app/app.s", std::ios_base::in);
   auto res = hw::Binary(parser.parse(str));
   hw::CPU cpu;
-  cpu.execute(res);
+  hw::IRGen gen;
+  gen.build(res);
+  gen.execute(cpu);
 }

@@ -1,6 +1,11 @@
 #include "ir_gen.h"
 #include "instruction/instruction.h"
 #include "llvm/IR/IRBuilder.h"
+#include "llvm/ExecutionEngine/ExecutionEngine.h"
+#include "llvm/ExecutionEngine/GenericValue.h"
+#include "llvm/ExecutionEngine/MCJIT.h"
+#include <llvm-18/llvm/Support/raw_ostream.h>
+#include "lib/sim.h"
 
 using namespace llvm;
 
@@ -39,16 +44,20 @@ void IRGen::build(Binary& bin)
   FunctionCallee simFlushFunc =
       module->getOrInsertFunction("simFlush", simFlushType);
 
-  std::unordered_map<uint32_t, BasicBlock*>BBMap;
+  std::unordered_map<uint32_t, BasicBlock*> BBMap;
   for (auto &BB : bin.label2pc) {
+    outs() << BB.second << " " << BB.first << '\n';
     BBMap[BB.second] = BasicBlock::Create(context, BB.first, mainFunc);
   }
+
+  std::unordered_map<std::string, FunctionCallee> FuncMap =
+    {{"simPutPixelFunc", simPutPixelFunc}, {"simFlushFunc", simFlushFunc}};
 
   uint32_t PC = 0;
   builder.SetInsertPoint(BBMap[0]);
   for (auto& instr: bin.instructions)
   {
-    //instr->build_ir(builder, instr, PC);
+    instr->build_ir(PC, {builder, regFile, BBMap, FuncMap});
     PC++;
     auto BB = BBMap.find(PC);
     if (BB != BBMap.end()) {
@@ -56,5 +65,33 @@ void IRGen::build(Binary& bin)
       builder.SetInsertPoint(BB->second);
     }
   }
+}
+
+void IRGen::execute(CPU& cpu)
+{
+  module->print(outs(), nullptr);
+  LLVMInitializeNativeTarget();
+  LLVMInitializeNativeAsmPrinter();
+
+  ExecutionEngine *ee = EngineBuilder(std::unique_ptr<Module>(module)).create();
+  ee->InstallLazyFunctionCreator([=](const std::string &fnName) -> void * {
+    if (fnName == "simFlush") {
+      return reinterpret_cast<void *>(simFlush);
+    }
+    if (fnName == "simPutPixel") {
+      return reinterpret_cast<void *>(simPutPixel);
+    }
+    return nullptr;
+  });
+  ee->finalizeObject();
+
+  simInit();
+
+  ArrayRef<GenericValue> noargs;
+  outs() << "\n#[Running code]\n";
+  ee->runFunction(mainFunc, noargs);
+  outs() << "#[Code was run]\n";
+
+  simExit();
 }
 } // namespace hw
