@@ -288,6 +288,10 @@ void hw::ALLOCInstr::build_ir(uint32_t PC, ir_data data)
 void hw::READInstr::execute(CPU& cpu)
 {
   cpu.m_regFile[_r1] = cpu.m_mem[cpu.m_regFile[_r2] + cpu.m_regFile[_r3]];
+  // if (cpu.m_regFile[_r2] + cpu.m_regFile[_r3] == 130560 + 36)
+  // {
+  //   cpu.dump_regs();
+  // }
 }
 
 hw::Instr_t hw::READInstr::instr()
@@ -302,7 +306,7 @@ void hw::READInstr::build_ir(uint32_t PC, ir_data data)
 
 void hw::WRITEInstr::execute(CPU& cpu)
 {
-  cpu.m_mem[_r1 + _r2] = cpu.m_regFile[_r3];
+  cpu.m_mem[cpu.m_regFile[_r1] + cpu.m_regFile[_r2]] = cpu.m_regFile[_r3];
 }
 
 hw::Instr_t hw::WRITEInstr::instr()
@@ -317,7 +321,7 @@ void hw::WRITEInstr::build_ir(uint32_t PC, ir_data data)
 
 void hw::WRITEiInstr::execute(CPU& cpu)
 {
-  cpu.m_mem[_r1 + _r2] = _r3;
+  cpu.m_mem[cpu.m_regFile[_r1] + _r2] = _r3;
 }
 
 hw::Instr_t hw::WRITEiInstr::instr()
@@ -332,7 +336,7 @@ void hw::WRITEiInstr::build_ir(uint32_t PC, ir_data data)
 
 void hw::WRITEriInstr::execute(CPU& cpu)
 {
-  cpu.m_mem[_r1 + cpu.m_regFile[_r2]] = _r3;
+  cpu.m_mem[cpu.m_regFile[_r1] + cpu.m_regFile[_r2]] = _r3;
 }
 
 hw::Instr_t hw::WRITEriInstr::instr()
