@@ -1,4 +1,12 @@
 entry
+    ALLOC x1 36
+    ALLOC x2 131072
+    WRITEi x1 5 0
+    WRITEi x1 7 0
+    WRITEi x1 8 0
+    WRITEri x2 x5 35 
+    WRITE x2 x5 x3
+    READ x2 x3 x4
     XOR x1 x1 x1
 main_loop
     XOR x2 x2 x2

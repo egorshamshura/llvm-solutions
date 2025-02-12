@@ -5,6 +5,7 @@
 #include <ios>
 
 #include <iostream>
+#include <tuple>
 
 int main()
 {
@@ -12,5 +13,7 @@ int main()
   std::ifstream str("../app/app2.s", std::ios_base::in);
   auto res = hw::Binary(parser.parse(str));
   hw::CPU cpu;
-  cpu.execute(res);;
+  hw::IRGen gen;
+  gen.build(res);
+  // cpu.execute(res);;
 }

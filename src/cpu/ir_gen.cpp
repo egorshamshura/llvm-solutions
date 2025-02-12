@@ -81,13 +81,13 @@ void IRGen::build(Binary& bin)
       builder.SetInsertPoint(BB->second);
     }
   }
+  module->print(outs(), nullptr);
+  bool verif = verifyFunction(*mainFunc, &outs());
+  outs() << "[VERIFICATION] " << (!verif ? "OK\n\n" : "FAIL\n\n");
 }
 
 void IRGen::execute(CPU& cpu)
 {
-  module->print(outs(), nullptr);
-  bool verif = verifyFunction(*mainFunc, &outs());
-  outs() << "[VERIFICATION] " << (!verif ? "OK\n\n" : "FAIL\n\n");
   LLVMInitializeNativeTarget();
   LLVMInitializeNativeAsmPrinter();
 

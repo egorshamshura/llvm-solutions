@@ -33,6 +33,11 @@ hw::Instr_t hw::EQiInstr::instr()
 
 void hw::EQiInstr::build_ir(uint32_t PC, ir_data data)
 {
+  auto* r2_value = load(_r2, data.regFile, data.builder);
+  auto* r3_value = data.builder.getInt32(_r3);
+  auto* comparison = data.builder.CreateICmpEQ(r2_value, r3_value, "eq_comparison");
+  auto* result = data.builder.CreateZExt(comparison, Type::getInt32Ty(data.builder.getContext()), "comparison_result");
+  data.builder.CreateStore(result, load(_r1, data.regFile, data.builder));
 }
 
 void hw::ADDInstr::execute(CPU& cpu)
@@ -62,6 +67,7 @@ hw::Instr_t hw::ANDiInstr::instr()
 
 void hw::ANDiInstr::build_ir(uint32_t PC, ir_data data)
 {
+  data.builder.CreateStore(data.builder.CreateAnd(load(_r2, data.regFile, data.builder), data.builder.getInt32(_r3)),GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::ANDInstr::execute(CPU& cpu)
@@ -76,13 +82,11 @@ hw::Instr_t hw::ANDInstr::instr()
 
 void hw::ANDInstr::build_ir(uint32_t PC, ir_data data)
 {
+  data.builder.CreateStore(data.builder.CreateSub(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)),GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::SUBInstr::execute(CPU& cpu)
 {
-  // if (_r1 == 9 && _r2 == 9 && _r3 == 11 && cpu.m_regFile[_r1] == 0) {
-  //   std::cout << "sub " << cpu.m_regFile[_r1] << " " << cpu.m_regFile[_r2] << " " << cpu.m_regFile[_r3] << " " << cpu.m_mem[cpu.m_regFile[_r3]] << std::endl;
-  // }
   cpu.m_regFile[_r1] = cpu.m_regFile[_r2] - cpu.m_regFile[_r3];
 }
 
@@ -172,7 +176,7 @@ void hw::INC_NEiInstr::build_ir(uint32_t PC, ir_data data)
   Value *arg1 =
       data.builder.CreateAdd(data.builder.CreateLoad(Type::getInt32Ty(data.builder.getContext()), arg1_p), data.builder.getInt32(1));
   data.builder.CreateStore(arg1, arg1_p);
- data.builder.CreateStore(data.builder.CreateICmpNE(arg1, data.builder.getInt32(_r3)),
+  data.builder.CreateStore(data.builder.CreateICmpNE(arg1, data.builder.getInt32(_r3)),
     GEP2_32(_r1, data.regFile, data.builder));
 }
 
@@ -214,8 +218,6 @@ void hw::BR_CONDInstr::build_ir(uint32_t PC, ir_data data)
 
 void hw::PUT_PIXELInstr::execute(CPU& cpu)
 {
-  //if (cpu.m_regFile[_r3] == 4293914567)
-    //std::cout << cpu.m_regFile[_r1] << " " << cpu.m_regFile[_r2] << " " << cpu.m_regFile[_r3] << std::endl;
   simPutPixel(cpu.m_regFile[_r1], cpu.m_regFile[_r2], cpu.m_regFile[_r3]); 
 }
 
@@ -288,13 +290,11 @@ hw::Instr_t hw::ALLOCInstr::instr()
 
 void hw::ALLOCInstr::build_ir(uint32_t PC, ir_data data)
 {
-  
+  data.builder.CreateStore(data.builder.CreateAlloca(Type::getInt32Ty(data.builder.getContext()), data.builder.getInt32(_r2)), GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::READInstr::execute(CPU& cpu)
 {
-  // if (cpu.m_regFile[_r2] == 0 && cpu.m_regFile[_r3] == 35)
-  //   std::cout << cpu.m_regFile[_r1] << " " << cpu.m_regFile[_r2] << " " << cpu.m_regFile[_r3] << std::endl;
   cpu.m_regFile[_r1] = cpu.m_mem[cpu.m_regFile[_r2] + cpu.m_regFile[_r3]];
 }
 
@@ -305,23 +305,15 @@ hw::Instr_t hw::READInstr::instr()
 
 void hw::READInstr::build_ir(uint32_t PC, ir_data data)
 {
-  
+  auto* base_ptr = load(_r2, data.regFile, data.builder);
+  auto* offset = load(_r3, data.regFile, data.builder);
+  auto* final_ptr = data.builder.CreateAdd(base_ptr, offset);
+  auto* loaded_value = data.builder.CreateLoad(Type::getInt32Ty(data.builder.getContext()), data.builder.CreateIntToPtr(final_ptr, data.builder.getInt8Ty()->getPointerTo()));
+  data.builder.CreateStore(loaded_value, GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::WRITEInstr::execute(CPU& cpu)
 {
-  if (_r3 == 9 && cpu.m_regFile[_r3] == 35 && cpu.m_mem[cpu.m_regFile[_r3]] == 4293914567) {
-    std::cout << cpu.m_regFile[_r1] << " " << cpu.m_regFile[_r2] << " " << cpu.m_regFile[_r3] << " " << cpu.m_mem[cpu.m_regFile[_r3]] << std::endl;
-  }
-  // } else if (_r3 == 9 && cpu.m_regFile[_r3] == 35) {
-  //   std::cout << "changed" << std::endl;
-  // }
-  if (cpu.m_regFile[_r1] + cpu.m_regFile[_r2] == 35)
-  {
-    
-    std::cout << _r1 << " " << _r2 << " " << _r3 <<  " " << cpu.m_regFile[_r3] << std::endl;
-    std::cout << cpu.m_regFile[_r1] << " " << cpu.m_regFile[_r2] << " " << cpu.m_regFile[_r3] << " " << cpu.m_mem[cpu.m_regFile[_r3]] << std::endl;
-  }
   cpu.m_mem[cpu.m_regFile[_r1] + cpu.m_regFile[_r2]] = cpu.m_regFile[_r3];
 }
 
@@ -332,7 +324,11 @@ hw::Instr_t hw::WRITEInstr::instr()
 
 void hw::WRITEInstr::build_ir(uint32_t PC, ir_data data)
 {
-  
+  auto* offset = load(_r2, data.regFile, data.builder);
+  auto* r3 = load(_r3, data.regFile, data.builder);
+  auto* mem_ptr = load(_r1, data.regFile, data.builder);
+  auto* final_ptr = data.builder.CreateAdd(mem_ptr, offset);
+  data.builder.CreateStore(r3, data.builder.CreateIntToPtr(final_ptr, data.builder.getInt8Ty()->getPointerTo()));
 }
 
 void hw::WRITEiInstr::execute(CPU& cpu)
@@ -347,7 +343,11 @@ hw::Instr_t hw::WRITEiInstr::instr()
 
 void hw::WRITEiInstr::build_ir(uint32_t PC, ir_data data)
 {
-  
+  auto* mem_ptr = load(_r1, data.regFile, data.builder);
+  auto* offset = data.builder.getInt32(_r2);  
+  auto* r3 = load(_r3, data.regFile, data.builder);
+  auto* final_ptr = data.builder.CreateAdd(mem_ptr, offset);
+  data.builder.CreateStore(r3, data.builder.CreateIntToPtr(final_ptr, data.builder.getInt8Ty()->getPointerTo()));
 }
 
 void hw::WRITEriInstr::execute(CPU& cpu)
@@ -362,7 +362,11 @@ hw::Instr_t hw::WRITEriInstr::instr()
 
 void hw::WRITEriInstr::build_ir(uint32_t PC, ir_data data)
 {
-  
+  auto* mem_ptr = load(_r1, data.regFile, data.builder);
+  auto* offset = load(_r2, data.regFile, data.builder);
+  auto* r3 = load(_r3, data.regFile, data.builder);
+  auto* final_ptr = data.builder.CreateAdd(mem_ptr, offset);
+  data.builder.CreateStore(r3, data.builder.CreateIntToPtr(final_ptr, data.builder.getInt8Ty()->getPointerTo()));
 }
 
 void hw::ADDiInstr::execute(CPU& cpu)
@@ -377,7 +381,7 @@ hw::Instr_t hw::ADDiInstr::instr()
 
 void hw::ADDiInstr::build_ir(uint32_t PC, ir_data data)
 {
-  
+  data.builder.CreateStore(data.builder.CreateAdd(load(_r2, data.regFile, data.builder), data.builder.getInt32(_r3)), GEP2_32(_r1, data.regFile, data.builder));
 }
 
 

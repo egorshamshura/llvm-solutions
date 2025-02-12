@@ -60,14 +60,6 @@ init_fire_second_loop
   BR_COND x5 init_fire_first_loop
 main_loop
   XOR x3 x3 x3
-  XOR x5 x5 x5
-  XOR x6 x6 x6
-  XOR x7 x7 x7
-  XOR x8 x8 x8
-  XOR x9 x9 x9
-  XOR x10 x10 x10
-  XOR x11 x11 x11
-  XOR x12 x12 x12
 inner_main_loop
   XOR x4 x4 x4
   ADDi x4 x4 1
