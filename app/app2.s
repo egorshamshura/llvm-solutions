@@ -8,7 +8,7 @@ entry
   XOR x15 x15 x15
   ADDi x15 x15 512
 entry_fill_framebuffer
-  WRITEi x1 0  4293914567
+  WRITEi x1 0  4278650631
   WRITEi x1 1  4280223495
   WRITEi x1 2  4281274119
   WRITEi x1 3  4282846983
@@ -80,9 +80,9 @@ color_from_neq_zero
   ADDi x10 x0 1
   DIV x11 x5 x10
   ANDi x11 x11 1
-  ANDi x5 x5 1
-  AND x5 x5 x11
-  SUB x9 x9 x5
+  ANDi x11 x5 1
+  AND x11 x5 x11
+  SUB x9 x9 x11
   WRITE x2 x7 x9
   BR_COND x0 after_eq
 color_from_eq_zero
@@ -100,7 +100,6 @@ after_eq
   XOR x9 x9 x9
   ADDi x9 x9 4293914567
 set_white_loop
-  PUT_PIXEL x6 x7 x9
   INC_NEi x8 x6 512
   BR_COND x8 set_white_loop
   FLUSH
