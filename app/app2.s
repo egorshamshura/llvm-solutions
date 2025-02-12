@@ -56,6 +56,7 @@ init_fire_second_loop
   WRITEri x2 x6 0
   INC_NEi x5 x4 255
   BR_COND x5 init_fire_second_loop
+b1
   INC_NEi x5 x3 512
   BR_COND x5 init_fire_first_loop
 main_loop
@@ -91,8 +92,10 @@ after_eq
   PUT_PIXEL x3 x4 x13
   INC_NEi x12 x4 256
   BR_COND x12 inner_inner_main_loop
+b2
   INC_NEi x12 x3 512
   BR_COND x12 inner_main_loop
+b3
   FLUSH
   BR_COND x0 main_loop
 exit

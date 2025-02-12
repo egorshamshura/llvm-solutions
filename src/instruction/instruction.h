@@ -35,14 +35,14 @@ enum class Instr_t
   INC_NEi,
   SUBi,
   PUT_PIXEL,
-  BR_COND,
-  FLUSH,
-  RAND,
-  ALLOC,
   READ,
   WRITE,
   WRITEi,
   WRITEri,
+  BR_COND,
+  FLUSH,
+  RAND,
+  ALLOC,
   EXIT,
 };
 

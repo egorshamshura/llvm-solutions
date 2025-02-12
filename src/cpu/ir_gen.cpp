@@ -3,7 +3,6 @@
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/ExecutionEngine/ExecutionEngine.h"
 #include "llvm/ExecutionEngine/GenericValue.h"
-#include "llvm/ExecutionEngine/MCJIT.h"
 #include <llvm-18/llvm/Support/raw_ostream.h>
 #include "lib/sim.h"
 #include "llvm/IR/Verifier.h"

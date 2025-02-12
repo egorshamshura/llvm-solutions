@@ -190,9 +190,9 @@ std::pair<std::string, std::unordered_map<std::string, size_t>> InstructionParse
     switch (instr) {
     case Instr_t::EQi:
     case Instr_t::ADD:
+    case Instr_t::ADDi:
     case Instr_t::AND:
     case Instr_t::ANDi:
-    case Instr_t::ADDi:
     case Instr_t::SUB:
     case Instr_t::MUL:
     case Instr_t::DIV:

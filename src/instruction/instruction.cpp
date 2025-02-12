@@ -35,9 +35,10 @@ void hw::EQiInstr::build_ir(uint32_t PC, ir_data data)
 {
   auto* r2_value = load(_r2, data.regFile, data.builder);
   auto* r3_value = data.builder.getInt32(_r3);
-  auto* comparison = data.builder.CreateICmpEQ(r2_value, r3_value, "eq_comparison");
-  auto* result = data.builder.CreateZExt(comparison, Type::getInt32Ty(data.builder.getContext()), "comparison_result");
-  data.builder.CreateStore(result, load(_r1, data.regFile, data.builder));
+  auto* comparison = data.builder.CreateICmpEQ(r2_value, r3_value);
+  auto* result = data.builder.CreateZExt(comparison, Type::getInt32Ty(data.builder.getContext()));
+  auto* r1_ptr = GEP2_32(_r1, data.regFile, data.builder);
+  data.builder.CreateStore(result, r1_ptr);
 }
 
 void hw::ADDInstr::execute(CPU& cpu)
@@ -82,7 +83,7 @@ hw::Instr_t hw::ANDInstr::instr()
 
 void hw::ANDInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateStore(data.builder.CreateSub(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)),GEP2_32(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateAnd(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)),GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::SUBInstr::execute(CPU& cpu)
@@ -173,8 +174,10 @@ hw::Instr_t hw::INC_NEiInstr::instr()
 void hw::INC_NEiInstr::build_ir(uint32_t PC, ir_data data)
 {
   Value *arg1_p = GEP2_32(_r2, data.regFile, data.builder);
+  auto& ctx = data.builder.getContext();
+  Value *load = data.builder.CreateLoad(data.builder.getInt32Ty(), arg1_p);
   Value *arg1 =
-      data.builder.CreateAdd(data.builder.CreateLoad(Type::getInt32Ty(data.builder.getContext()), arg1_p), data.builder.getInt32(1));
+      data.builder.CreateAdd(load, data.builder.getInt32(1));
   data.builder.CreateStore(arg1, arg1_p);
   data.builder.CreateStore(data.builder.CreateICmpNE(arg1, data.builder.getInt32(_r3)),
     GEP2_32(_r1, data.regFile, data.builder));
