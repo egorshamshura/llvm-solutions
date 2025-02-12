@@ -88,8 +88,9 @@ color_from_neq_zero
 color_from_eq_zero
   WRITEi x2 x7 0
 after_eq
+  RAND x5
   READ x13 x1 x8
-  PUT_PIXEL x3 x4 x13
+  PUT_PIXEL x3 x4 x5
   INC_NEi x12 x4 256
   BR_COND x12 inner_inner_main_loop
   INC_NEi x12 x3 512
