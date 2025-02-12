@@ -22,7 +22,11 @@ struct ir_data
 
 enum class Instr_t
 {
+  EQi,
   ADD,
+  ADDi,
+  AND,
+  ANDi,
   SUB,
   MUL,
   DIV,
@@ -34,11 +38,20 @@ enum class Instr_t
   BR_COND,
   FLUSH,
   RAND,
+  ALLOC,
+  READ,
+  WRITE,
+  WRITEi,
+  WRITEri,
   EXIT,
 };
 
 static std::unordered_map<std::string, Instr_t> str2Instr = {
+  {"EQi", Instr_t::EQi},
   {"ADD", Instr_t::ADD},
+  {"ADDi", Instr_t::ADDi},
+  {"AND", Instr_t::AND},
+  {"ANDi", Instr_t::ANDi},
   {"SUB", Instr_t::SUB},
   {"MUL", Instr_t::MUL},
   {"DIV", Instr_t::DIV},
@@ -50,6 +63,11 @@ static std::unordered_map<std::string, Instr_t> str2Instr = {
   {"BR_COND", Instr_t::BR_COND},
   {"FLUSH", Instr_t::FLUSH},
   {"RAND", Instr_t::RAND},
+  {"ALLOC", Instr_t::ALLOC},
+  {"READ", Instr_t::READ},
+  {"WRITE", Instr_t::WRITE},
+  {"WRITEi", Instr_t::WRITEi},
+  {"WRITEri", Instr_t::WRITEri},
   {"EXIT", Instr_t::EXIT},
 };
 static std::unordered_map<Instr_t, std::string> instr2Str;
@@ -72,6 +90,14 @@ struct BinaryOperator : Instruction
   uint32_t _r3;
 };
 
+struct EQiInstr : BinaryOperator
+{
+  using BinaryOperator::BinaryOperator;
+  void execute(CPU&) override;
+  Instr_t instr() override;
+  void build_ir(uint32_t, ir_data) override;
+};
+
 struct ADDInstr : BinaryOperator
 {
   using BinaryOperator::BinaryOperator;
@@ -79,6 +105,31 @@ struct ADDInstr : BinaryOperator
   Instr_t instr() override;
   void build_ir(uint32_t, ir_data) override;
 };
+
+struct ADDiInstr : BinaryOperator
+{
+  using BinaryOperator::BinaryOperator;
+  void execute(CPU&) override;
+  Instr_t instr() override;
+  void build_ir(uint32_t, ir_data) override;
+};
+
+struct ANDiInstr : BinaryOperator
+{
+  using BinaryOperator::BinaryOperator;
+  void execute(CPU&) override;
+  Instr_t instr() override;
+  void build_ir(uint32_t, ir_data) override;
+};
+
+struct ANDInstr : BinaryOperator
+{
+  using BinaryOperator::BinaryOperator;
+  void execute(CPU&) override;
+  Instr_t instr() override;
+  void build_ir(uint32_t, ir_data) override;
+};
+
 
 struct SUBInstr : BinaryOperator
 {
@@ -143,6 +194,38 @@ struct PUT_PIXELInstr : BinaryOperator
   Instr_t instr() override;
   void build_ir(uint32_t, ir_data) override;
 };
+
+struct READInstr : BinaryOperator
+{
+  using BinaryOperator::BinaryOperator;
+  void execute(CPU&) override;
+  Instr_t instr() override;
+  void build_ir(uint32_t, ir_data) override;
+};
+
+struct WRITEInstr : BinaryOperator
+{
+  using BinaryOperator::BinaryOperator;
+  void execute(CPU&) override;
+  Instr_t instr() override;
+  void build_ir(uint32_t, ir_data) override;
+};
+
+struct WRITEiInstr : BinaryOperator
+{
+  using BinaryOperator::BinaryOperator;
+  void execute(CPU&) override;
+  Instr_t instr() override;
+  void build_ir(uint32_t, ir_data) override;
+};
+
+struct WRITEriInstr : BinaryOperator
+{
+  using BinaryOperator::BinaryOperator;
+  void execute(CPU&) override;
+  Instr_t instr() override;
+  void build_ir(uint32_t, ir_data) override;
+};
 /* ---------------- */
 
 /* Unary operations */
@@ -156,6 +239,14 @@ struct UnaryOperator : Instruction
 };
 
 struct BR_CONDInstr : UnaryOperator
+{
+  using UnaryOperator::UnaryOperator;
+  void execute(CPU&) override;
+  Instr_t instr() override;
+  void build_ir(uint32_t, ir_data) override;
+};
+
+struct ALLOCInstr : UnaryOperator
 {
   using UnaryOperator::UnaryOperator;
   void execute(CPU&) override;

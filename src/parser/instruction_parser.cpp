@@ -54,6 +54,21 @@ Binary InstructionParser::parse(std::ifstream &input)
       pushNArgs<ADDInstr, 3>(result, sstr);
       break;
     }
+    case Instr_t::ADDi:
+    {
+      pushNArgs<ADDiInstr, 3>(result, sstr);
+      break;
+    }
+    case Instr_t::ANDi:
+    {
+      pushNArgs<ANDiInstr, 3>(result, sstr);
+      break;
+    }
+    case Instr_t::EQi:
+    {
+      pushNArgs<EQiInstr, 3>(result, sstr);
+      break;
+    }
     case Instr_t::SUB:
     {
       pushNArgs<SUBInstr, 3>(result, sstr);
@@ -92,6 +107,36 @@ Binary InstructionParser::parse(std::ifstream &input)
     case Instr_t::PUT_PIXEL:
     {
       pushNArgs<PUT_PIXELInstr, 3>(result, sstr);
+      break;
+    }
+    case Instr_t::ALLOC:
+    {
+      pushNArgs<ALLOCInstr, 2>(result, sstr);
+      break;
+    }
+    case Instr_t::READ:
+    {
+      pushNArgs<READInstr, 3>(result, sstr);
+      break;
+    }
+    case Instr_t::WRITE:
+    {
+      pushNArgs<WRITEInstr, 3>(result, sstr);
+      break;
+    }
+    case Instr_t::WRITEi:
+    {
+      pushNArgs<WRITEiInstr, 3>(result, sstr);
+      break;
+    }
+    case Instr_t::AND:
+    {
+      pushNArgs<ANDInstr, 3>(result, sstr);
+      break;
+    }
+    case Instr_t::WRITEri:
+    {
+      pushNArgs<WRITEriInstr, 3>(result, sstr);
       break;
     }
     case Instr_t::BR_COND:
@@ -143,7 +188,11 @@ std::pair<std::string, std::unordered_map<std::string, size_t>> InstructionParse
     ++instr_cnt;
     result += name + " ";
     switch (instr) {
+    case Instr_t::EQi:
     case Instr_t::ADD:
+    case Instr_t::AND:
+    case Instr_t::ANDi:
+    case Instr_t::ADDi:
     case Instr_t::SUB:
     case Instr_t::MUL:
     case Instr_t::DIV:
@@ -152,6 +201,10 @@ std::pair<std::string, std::unordered_map<std::string, size_t>> InstructionParse
     case Instr_t::INC_NEi:
     case Instr_t::SUBi:
     case Instr_t::PUT_PIXEL:
+    case Instr_t::READ:
+    case Instr_t::WRITE:
+    case Instr_t::WRITEi:
+    case Instr_t::WRITEri:
     {
       input >> arg;
       result += arg + " ";
@@ -161,6 +214,7 @@ std::pair<std::string, std::unordered_map<std::string, size_t>> InstructionParse
       result += arg + " ";
       break;
     }
+    case Instr_t::ALLOC:
     case Instr_t::BR_COND:
     {
       input >> arg;

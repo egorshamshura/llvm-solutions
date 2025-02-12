@@ -4,13 +4,13 @@
 #include <fstream>
 #include <ios>
 
+#include <iostream>
+
 int main()
 {
   hw::InstructionParser parser;
-  std::ifstream str("../app/app.s", std::ios_base::in);
+  std::ifstream str("../app/app2.s", std::ios_base::in);
   auto res = hw::Binary(parser.parse(str));
   hw::CPU cpu;
-  hw::IRGen gen;
-  gen.build(res);
-  gen.execute(cpu);
+  cpu.execute(res);;
 }

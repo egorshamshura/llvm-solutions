@@ -10,7 +10,7 @@ namespace hw
 namespace constant 
 {
 static constexpr uint32_t REG_SIZE = 16;
-static constexpr uint32_t MEM_SIZE = 65536;
+static constexpr uint32_t MEM_SIZE = 262144;
 static constexpr uint32_t DIS_WIDTH = 256;
 static constexpr uint32_t DIS_HEIGHT = 128;
 static constexpr uint32_t DIS_SCALE = 4;
@@ -32,6 +32,7 @@ struct CPU
   uint32_t m_regFile[constant::REG_SIZE] = {};
   uint32_t m_mem[constant::MEM_SIZE] = {};
   uint32_t m_run = 1;
+  uint32_t m_mem_idx = 0;
 };
 
 }; // namespace hw

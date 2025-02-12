@@ -20,6 +20,20 @@ LoadInst* load(uint32_t arg, GlobalVariable *regFile, IRBuilder<> &builder)
 }
 } // anonymous namespace
 
+void hw::EQiInstr::execute(CPU& cpu)
+{
+  cpu.m_regFile[_r1] = static_cast<uint32_t>(cpu.m_regFile[_r2] == _r3);
+}
+
+hw::Instr_t hw::EQiInstr::instr()
+{
+  return hw::Instr_t::EQi;
+}
+
+void hw::EQiInstr::build_ir(uint32_t PC, ir_data data)
+{
+}
+
 void hw::ADDInstr::execute(CPU& cpu)
 {
   cpu.m_regFile[_r1] = cpu.m_regFile[_r2] + cpu.m_regFile[_r3];
@@ -33,6 +47,34 @@ hw::Instr_t hw::ADDInstr::instr()
 void hw::ADDInstr::build_ir(uint32_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateAdd(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)), GEP2_32(_r1, data.regFile, data.builder));
+}
+
+void hw::ANDiInstr::execute(CPU& cpu)
+{
+  cpu.m_regFile[_r1] = cpu.m_regFile[_r2] & _r3;
+}
+
+hw::Instr_t hw::ANDiInstr::instr()
+{
+  return hw::Instr_t::ANDi;
+}
+
+void hw::ANDiInstr::build_ir(uint32_t PC, ir_data data)
+{
+}
+
+void hw::ANDInstr::execute(CPU& cpu)
+{
+  cpu.m_regFile[_r1] = cpu.m_regFile[_r2] & cpu.m_regFile[_r3];
+}
+
+hw::Instr_t hw::ANDInstr::instr()
+{
+  return hw::Instr_t::AND;
+}
+
+void hw::ANDInstr::build_ir(uint32_t PC, ir_data data)
+{
 }
 
 void hw::SUBInstr::execute(CPU& cpu)
@@ -226,4 +268,96 @@ void hw::RANDInstr::build_ir(uint32_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateCall(data.FuncMap.at("simRandFunc")), GEP2_32(_r1, data.regFile, data.builder));
 }
+
+void hw::ALLOCInstr::execute(CPU& cpu)
+{
+  cpu.m_regFile[_r1] = cpu.m_mem_idx;
+  cpu.m_mem_idx += _r2;
+}
+
+hw::Instr_t hw::ALLOCInstr::instr()
+{
+  return hw::Instr_t::ALLOC;
+}
+
+void hw::ALLOCInstr::build_ir(uint32_t PC, ir_data data)
+{
+  
+}
+
+void hw::READInstr::execute(CPU& cpu)
+{
+  cpu.m_regFile[_r1] = cpu.m_mem[_r2 + _r3];
+}
+
+hw::Instr_t hw::READInstr::instr()
+{
+  return hw::Instr_t::READ;
+}
+
+void hw::READInstr::build_ir(uint32_t PC, ir_data data)
+{
+  
+}
+
+void hw::WRITEInstr::execute(CPU& cpu)
+{
+  cpu.m_mem[_r1 + _r2] = cpu.m_regFile[_r3];
+}
+
+hw::Instr_t hw::WRITEInstr::instr()
+{
+  return hw::Instr_t::WRITE;
+}
+
+void hw::WRITEInstr::build_ir(uint32_t PC, ir_data data)
+{
+  
+}
+
+void hw::WRITEiInstr::execute(CPU& cpu)
+{
+  cpu.m_mem[_r1 + _r2] = _r3;
+}
+
+hw::Instr_t hw::WRITEiInstr::instr()
+{
+  return hw::Instr_t::WRITEi;
+}
+
+void hw::WRITEiInstr::build_ir(uint32_t PC, ir_data data)
+{
+  
+}
+
+void hw::WRITEriInstr::execute(CPU& cpu)
+{
+  cpu.m_mem[_r1 + cpu.m_regFile[_r2]] = _r3;
+}
+
+hw::Instr_t hw::WRITEriInstr::instr()
+{
+  return hw::Instr_t::WRITEi;
+}
+
+void hw::WRITEriInstr::build_ir(uint32_t PC, ir_data data)
+{
+  
+}
+
+void hw::ADDiInstr::execute(CPU& cpu)
+{
+  cpu.m_regFile[_r1] = cpu.m_regFile[_r2] + _r3;
+}
+
+hw::Instr_t hw::ADDiInstr::instr()
+{
+  return hw::Instr_t::ADDi;
+}
+
+void hw::ADDiInstr::build_ir(uint32_t PC, ir_data data)
+{
+  
+}
+
 

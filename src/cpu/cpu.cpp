@@ -1,6 +1,8 @@
 #include "cpu.h"
 #include "lib/sim.h"
 
+#include <iostream>
+
 void hw::CPU::execute(hw::Binary& bin) 
 {
   m_bin = std::move(bin);
