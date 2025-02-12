@@ -287,7 +287,7 @@ void hw::ALLOCInstr::build_ir(uint32_t PC, ir_data data)
 
 void hw::READInstr::execute(CPU& cpu)
 {
-  cpu.m_regFile[_r1] = cpu.m_mem[_r2 + _r3];
+  cpu.m_regFile[_r1] = cpu.m_mem[cpu.m_regFile[_r2] + cpu.m_regFile[_r3]];
 }
 
 hw::Instr_t hw::READInstr::instr()
