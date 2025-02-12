@@ -96,6 +96,7 @@ after_eq
   BR_COND x12 inner_main_loop
   XOR x6 x6 x6
   XOR x7 x7 x7
+  ADDi x7 x7 255
   XOR x9 x9 x9
   ADDi x9 x9 4293914567
 set_white_loop
