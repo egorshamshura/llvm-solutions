@@ -80,6 +80,9 @@ void hw::ANDInstr::build_ir(uint32_t PC, ir_data data)
 
 void hw::SUBInstr::execute(CPU& cpu)
 {
+  // if (_r1 == 9 && _r2 == 9 && _r3 == 11 && cpu.m_regFile[_r1] == 0) {
+  //   std::cout << "sub " << cpu.m_regFile[_r1] << " " << cpu.m_regFile[_r2] << " " << cpu.m_regFile[_r3] << " " << cpu.m_mem[cpu.m_regFile[_r3]] << std::endl;
+  // }
   cpu.m_regFile[_r1] = cpu.m_regFile[_r2] - cpu.m_regFile[_r3];
 }
 
@@ -307,16 +310,18 @@ void hw::READInstr::build_ir(uint32_t PC, ir_data data)
 
 void hw::WRITEInstr::execute(CPU& cpu)
 {
-  // if (_r3 == 9 && cpu.m_regFile[_r3] == 35 && cpu.m_mem[cpu.m_regFile[_r3]] == 4293914567) {
-  //   std::cout << cpu.m_regFile[_r1] << " " << cpu.m_regFile[_r2] << " " << cpu.m_regFile[_r3] << " " << cpu.m_mem[cpu.m_regFile[_r3]] << std::endl;
-  // }
+  if (_r3 == 9 && cpu.m_regFile[_r3] == 35 && cpu.m_mem[cpu.m_regFile[_r3]] == 4293914567) {
+    std::cout << cpu.m_regFile[_r1] << " " << cpu.m_regFile[_r2] << " " << cpu.m_regFile[_r3] << " " << cpu.m_mem[cpu.m_regFile[_r3]] << std::endl;
+  }
   // } else if (_r3 == 9 && cpu.m_regFile[_r3] == 35) {
   //   std::cout << "changed" << std::endl;
   // }
-  // if (cpu.m_regFile[_r1] + cpu.m_regFile[_r2] == 35)
-  // {
-  //   std::cout << _r1 << " " << _r2 << " " << cpu.m_regFile[_r3] << std::endl;
-  // }
+  if (cpu.m_regFile[_r1] + cpu.m_regFile[_r2] == 35)
+  {
+    
+    std::cout << _r1 << " " << _r2 << " " << _r3 <<  " " << cpu.m_regFile[_r3] << std::endl;
+    std::cout << cpu.m_regFile[_r1] << " " << cpu.m_regFile[_r2] << " " << cpu.m_regFile[_r3] << " " << cpu.m_mem[cpu.m_regFile[_r3]] << std::endl;
+  }
   cpu.m_mem[cpu.m_regFile[_r1] + cpu.m_regFile[_r2]] = cpu.m_regFile[_r3];
 }
 

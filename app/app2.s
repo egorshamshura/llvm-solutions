@@ -60,6 +60,14 @@ init_fire_second_loop
   BR_COND x5 init_fire_first_loop
 main_loop
   XOR x3 x3 x3
+  XOR x5 x5 x5
+  XOR x6 x6 x6
+  XOR x7 x7 x7
+  XOR x8 x8 x8
+  XOR x9 x9 x9
+  XOR x10 x10 x10
+  XOR x11 x11 x11
+  XOR x12 x12 x12
 inner_main_loop
   XOR x4 x4 x4
   ADDi x4 x4 1
@@ -69,7 +77,7 @@ inner_inner_main_loop
   ADD  x6 x6 x3
   ADDi x7 x6 0
   SUB  x7 x7 x15
-  ANDi x8 x5 3
+  ANDi x8 x5 1
   SUB  x7 x7 x8
   ADDi x7 x7 1
   READ x8 x2 x6
@@ -80,7 +88,6 @@ color_from_neq_zero
   ADDi x10 x0 1
   DIV x11 x5 x10
   ANDi x11 x11 1
-  ANDi x11 x5 1
   AND x11 x5 x11
   SUB x9 x9 x11
   WRITE x2 x7 x9
@@ -94,14 +101,6 @@ after_eq
   BR_COND x12 inner_inner_main_loop
   INC_NEi x12 x3 512
   BR_COND x12 inner_main_loop
-  XOR x6 x6 x6
-  XOR x7 x7 x7
-  ADDi x7 x7 255
-  XOR x9 x9 x9
-  ADDi x9 x9 4293914567
-set_white_loop
-  INC_NEi x8 x6 512
-  BR_COND x8 set_white_loop
   FLUSH
   BR_COND x0 main_loop
 exit
