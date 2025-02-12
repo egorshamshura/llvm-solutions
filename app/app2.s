@@ -8,7 +8,7 @@ entry
   XOR x15 x15 x15
   ADDi x15 x15 512
 entry_fill_framebuffer
-  WRITEi x1 0  4278650631
+  WRITEi x1 0  4293914567
   WRITEi x1 1  4280223495
   WRITEi x1 2  4281274119
   WRITEi x1 3  4282846983
