@@ -29,11 +29,6 @@ struct CPU
 {
   void execute(Binary& bin);
   void dump_regs() {
-    for (int i = 0; i != constant::MEM_SIZE; ++i)
-    {
-      if (m_mem[i] == 35)
-        std::cout << "m_mem[" << i << "] = " << 35 << std::endl;
-    }
     for (int i = 0; i != constant::REG_SIZE; ++i)
     {
       std::cout << "x" << i << " = " << m_regFile[i] << "; ";

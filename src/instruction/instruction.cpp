@@ -2,6 +2,7 @@
 #include "lib/sim.h"
 #include "cpu/cpu.h"
 #include <llvm-18/llvm/Support/raw_ostream.h>
+#include <iostream>
 
 extern bool ___temp;
 

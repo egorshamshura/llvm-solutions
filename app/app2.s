@@ -94,6 +94,14 @@ after_eq
   BR_COND x12 inner_inner_main_loop
   INC_NEi x12 x3 512
   BR_COND x12 inner_main_loop
+  XOR x6 x6 x6
+  XOR x7 x7 x7
+  XOR x9 x9 x9
+  ADDi x9 x9 4293914567
+set_white_loop
+  PUT_PIXEL x6 x7 x9
+  INC_NEi x8 x6 512
+  BR_COND x8 set_white_loop
   FLUSH
   BR_COND x0 main_loop
 exit
