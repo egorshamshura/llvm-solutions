@@ -6,6 +6,7 @@ void simFlush();
 void simPutPixel(int x, int y, int argb);
 int simRand();
 long long simRand64();
+void dump(long long);
 #endif
 
 extern void simInit();

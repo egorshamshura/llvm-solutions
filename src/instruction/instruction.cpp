@@ -1,23 +1,23 @@
 #include "instruction.h"
 #include "lib/sim.h"
 #include "cpu/cpu.h"
-#include <llvm-18/llvm/IR/Type.h>
 #include <llvm-18/llvm/Support/raw_ostream.h>
+#include <iostream>
 
 extern bool ___temp;
 
 namespace
 {
 
-Value* GEP2_64(uint32_t arg, GlobalVariable *regFile, IRBuilder<> &builder) 
+Value* GEP2_32(uint32_t arg, GlobalVariable *regFile, IRBuilder<> &builder) 
 {
-  ArrayType *regFileType = ArrayType::get(Type::getInt64Ty(builder.getContext()), hw::constant::REG_SIZE);
-  return builder.CreateConstGEP2_64(regFileType, regFile, 0, arg);
+  ArrayType *regFileType = ArrayType::get(Type::getInt32Ty(builder.getContext()), hw::constant::REG_SIZE);
+  return builder.CreateConstGEP2_32(regFileType, regFile, 0, arg);
 }
 
 LoadInst* load(uint32_t arg, GlobalVariable *regFile, IRBuilder<> &builder)
 {
-  return builder.CreateLoad(Type::getInt64Ty(builder.getContext()), GEP2_64(arg, regFile, builder));
+  return builder.CreateLoad(Type::getInt32Ty(builder.getContext()), GEP2_32(arg, regFile, builder));
 }
 } // anonymous namespace
 
@@ -34,10 +34,10 @@ hw::Instr_t hw::EQiInstr::instr()
 void hw::EQiInstr::build_ir(uint32_t PC, ir_data data)
 {
   auto* r2_value = load(_r2, data.regFile, data.builder);
-  auto* r3_value = data.builder.getInt64(_r3);
+  auto* r3_value = data.builder.getInt32(_r3);
   auto* comparison = data.builder.CreateICmpEQ(r2_value, r3_value);
-  auto* result = data.builder.CreateZExt(comparison, Type::getInt64Ty(data.builder.getContext()));
-  auto* r1_ptr = GEP2_64(_r1, data.regFile, data.builder);
+  auto* result = data.builder.CreateZExt(comparison, Type::getInt32Ty(data.builder.getContext()));
+  auto* r1_ptr = GEP2_32(_r1, data.regFile, data.builder);
   data.builder.CreateStore(result, r1_ptr);
 }
 
@@ -53,7 +53,7 @@ hw::Instr_t hw::ADDInstr::instr()
 
 void hw::ADDInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateStore(data.builder.CreateAdd(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)), GEP2_64(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateAdd(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)), GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::ANDiInstr::execute(CPU& cpu)
@@ -68,7 +68,7 @@ hw::Instr_t hw::ANDiInstr::instr()
 
 void hw::ANDiInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateStore(data.builder.CreateAnd(load(_r2, data.regFile, data.builder), data.builder.getInt64(_r3)),GEP2_64(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateAnd(load(_r2, data.regFile, data.builder), data.builder.getInt32(_r3)),GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::ANDInstr::execute(CPU& cpu)
@@ -83,7 +83,7 @@ hw::Instr_t hw::ANDInstr::instr()
 
 void hw::ANDInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateStore(data.builder.CreateAnd(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)),GEP2_64(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateAnd(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)),GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::SUBInstr::execute(CPU& cpu)
@@ -98,7 +98,7 @@ hw::Instr_t hw::SUBInstr::instr()
 
 void hw::SUBInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateStore(data.builder.CreateSub(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)), GEP2_64(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateSub(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)), GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::MULInstr::execute(CPU& cpu)
@@ -113,7 +113,7 @@ hw::Instr_t hw::MULInstr::instr()
 
 void hw::MULInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateStore(data.builder.CreateMul(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)), GEP2_64(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateMul(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)), GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::DIVInstr::execute(CPU& cpu)
@@ -128,7 +128,7 @@ hw::Instr_t hw::DIVInstr::instr()
 
 void hw::DIVInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateStore(data.builder.CreateSDiv(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)), GEP2_64(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateSDiv(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)), GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::REMInstr::execute(CPU& cpu)
@@ -143,7 +143,7 @@ hw::Instr_t hw::REMInstr::instr()
 
 void hw::REMInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateStore(data.builder.CreateSRem(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)), GEP2_64(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateSRem(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)), GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::XORInstr::execute(CPU& cpu)
@@ -158,7 +158,7 @@ hw::Instr_t hw::XORInstr::instr()
 
 void hw::XORInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateStore(data.builder.CreateXor(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)), GEP2_64(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateXor(load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)), GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::INC_NEiInstr::execute(CPU& cpu)
@@ -173,14 +173,14 @@ hw::Instr_t hw::INC_NEiInstr::instr()
 
 void hw::INC_NEiInstr::build_ir(uint32_t PC, ir_data data)
 {
-  Value *arg1_p = GEP2_64(_r2, data.regFile, data.builder);
+  Value *arg1_p = GEP2_32(_r2, data.regFile, data.builder);
   auto& ctx = data.builder.getContext();
-  Value *load = data.builder.CreateLoad(data.builder.getInt64Ty(), arg1_p);
+  Value *load = data.builder.CreateLoad(data.builder.getInt32Ty(), arg1_p);
   Value *arg1 =
-      data.builder.CreateAdd(load, data.builder.getInt64(1));
+      data.builder.CreateAdd(load, data.builder.getInt32(1));
   data.builder.CreateStore(arg1, arg1_p);
-  data.builder.CreateStore(data.builder.CreateICmpNE(arg1, data.builder.getInt64(_r3)),
-    GEP2_64(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateICmpNE(arg1, data.builder.getInt32(_r3)),
+    GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::SUBiInstr::execute(CPU& cpu)
@@ -190,7 +190,7 @@ void hw::SUBiInstr::execute(CPU& cpu)
 
 void hw::SUBiInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateStore(data.builder.CreateSub(load(_r2, data.regFile, data.builder), data.builder.getInt64(_r3)),GEP2_64(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateSub(load(_r2, data.regFile, data.builder), data.builder.getInt32(_r3)),GEP2_32(_r1, data.regFile, data.builder));
 }
 
 hw::Instr_t hw::SUBiInstr::instr()
@@ -231,10 +231,7 @@ hw::Instr_t hw::PUT_PIXELInstr::instr()
 
 void hw::PUT_PIXELInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateCall(data.FuncMap.at("simPutPixelFunc"), {
-    data.builder.CreateTrunc(load(_r1, data.regFile, data.builder), Type::getInt32Ty(data.builder.getContext())), 
-    data.builder.CreateTrunc(load(_r2, data.regFile, data.builder), Type::getInt32Ty(data.builder.getContext())), 
-    data.builder.CreateTrunc(load(_r3, data.regFile, data.builder), Type::getInt32Ty(data.builder.getContext()))});
+  data.builder.CreateCall(data.FuncMap.at("simPutPixelFunc"), {load(_r1, data.regFile, data.builder), load(_r2, data.regFile, data.builder), load(_r3, data.regFile, data.builder)});
 }
 
 
@@ -280,7 +277,7 @@ hw::Instr_t hw::RANDInstr::instr()
 
 void hw::RANDInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateStore(data.builder.CreateCall(data.FuncMap.at("simRand64Func")), GEP2_64(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateCall(data.FuncMap.at("simRandFunc")), GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::ALLOCInstr::execute(CPU& cpu)
@@ -296,7 +293,7 @@ hw::Instr_t hw::ALLOCInstr::instr()
 
 void hw::ALLOCInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateStore(data.builder.CreateAlloca(ArrayType::get(data.builder.getInt64Ty(), _r2)), GEP2_64(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateAlloca(Type::getInt32Ty(data.builder.getContext()), data.builder.getInt32(_r2)), GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::READInstr::execute(CPU& cpu)
@@ -314,8 +311,8 @@ void hw::READInstr::build_ir(uint32_t PC, ir_data data)
   auto* base_ptr = load(_r2, data.regFile, data.builder);
   auto* offset = load(_r3, data.regFile, data.builder);
   auto* final_ptr = data.builder.CreateAdd(base_ptr, offset);
-  auto* loaded_value = data.builder.CreateLoad(Type::getInt64Ty(data.builder.getContext()), data.builder.CreateIntToPtr(final_ptr, data.builder.getInt8Ty()->getPointerTo()));
-  data.builder.CreateStore(loaded_value, GEP2_64(_r1, data.regFile, data.builder));
+  auto* loaded_value = data.builder.CreateLoad(Type::getInt32Ty(data.builder.getContext()), data.builder.CreateIntToPtr(final_ptr, data.builder.getInt8Ty()->getPointerTo()));
+  data.builder.CreateStore(loaded_value, GEP2_32(_r1, data.regFile, data.builder));
 }
 
 void hw::WRITEInstr::execute(CPU& cpu)
@@ -349,11 +346,11 @@ hw::Instr_t hw::WRITEiInstr::instr()
 
 void hw::WRITEiInstr::build_ir(uint32_t PC, ir_data data)
 {
-  auto* mem_ptr = data.builder.CreateLoad(Type::getInt64Ty(data.builder.getContext()), GEP2_64(_r1, data.regFile, data.builder));
-  auto* offset = data.builder.getInt64(_r2);  
-  auto* r3 = data.builder.getInt64(_r3);
+  auto* mem_ptr = load(_r1, data.regFile, data.builder);
+  auto* offset = data.builder.getInt32(_r2);  
+  auto* r3 = load(_r3, data.regFile, data.builder);
   auto* final_ptr = data.builder.CreateAdd(mem_ptr, offset);
-  data.builder.CreateStore(r3, data.builder.CreateIntToPtr(final_ptr, data.builder.getInt64Ty()->getPointerTo()));
+  data.builder.CreateStore(r3, data.builder.CreateIntToPtr(final_ptr, data.builder.getInt8Ty()->getPointerTo()));
 }
 
 void hw::WRITEriInstr::execute(CPU& cpu)
@@ -387,7 +384,5 @@ hw::Instr_t hw::ADDiInstr::instr()
 
 void hw::ADDiInstr::build_ir(uint32_t PC, ir_data data)
 {
-  data.builder.CreateStore(data.builder.CreateAdd(load(_r2, data.regFile, data.builder), data.builder.getInt64(_r3)), GEP2_64(_r1, data.regFile, data.builder));
+  data.builder.CreateStore(data.builder.CreateAdd(load(_r2, data.regFile, data.builder), data.builder.getInt32(_r3)), GEP2_32(_r1, data.regFile, data.builder));
 }
-
-

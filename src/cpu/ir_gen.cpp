@@ -1,12 +1,10 @@
 #include "ir_gen.h"
 #include "instruction/instruction.h"
-#include "llvm/ExecutionEngine/MCJIT.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/ExecutionEngine/ExecutionEngine.h"
 #include "llvm/ExecutionEngine/GenericValue.h"
 #include <llvm-18/llvm/Support/raw_ostream.h>
 #include "lib/sim.h"
-#include "llvm/IR/DerivedTypes.h"
 #include "llvm/IR/Verifier.h"
 
 using namespace llvm;
@@ -19,10 +17,9 @@ void IRGen::build(Binary& bin)
   IRBuilder<> builder(context);
   Type *voidType = Type::getVoidTy(context);
   Type *int32Type = Type::getInt32Ty(context);
-  Type *int64Type = Type::getInt64Ty(context);
 
-  //[16 x i64] regFile = {0, 0, 0, 0}
-  ArrayType *regFileType = ArrayType::get(int64Type, constant::REG_SIZE);
+  //[16 x i32] regFile = {0, 0, 0, 0}
+  ArrayType *regFileType = ArrayType::get(int32Type, constant::REG_SIZE);
 
   GlobalVariable *regFile = new GlobalVariable(
       *module, regFileType, false, GlobalValue::PrivateLinkage, 0, "regFile");
@@ -53,11 +50,6 @@ void IRGen::build(Binary& bin)
   FunctionCallee simRandFunc =
       module->getOrInsertFunction("simRand", simRandType);
 
-  // declare int @simRand64()
-  FunctionType *simRand64Type = FunctionType::get(int64Type, false);
-  FunctionCallee simRand64Func =
-      module->getOrInsertFunction("simRand", simRandType);
-
   std::unordered_map<uint32_t, BasicBlock*> BBMap;
   std::vector<std::pair<size_t, std::string>> vs;
   for (auto &BB : bin.label2pc) {
@@ -73,7 +65,7 @@ void IRGen::build(Binary& bin)
 
   std::unordered_map<std::string, FunctionCallee> FuncMap =
     {{"simPutPixelFunc", simPutPixelFunc}, {"simFlushFunc", simFlushFunc},
-    {"simRandFunc", simRandFunc}, {"simRand64Func", simRand64Func}};
+    {"simRandFunc", simRandFunc}};
 
   uint32_t PC = 0;
   builder.SetInsertPoint(BBMap[0]);
