@@ -1,10 +1,7 @@
 #pragma once
 
-#include <vector>
-#include <memory>
 #include <fstream>
 
-#include "instruction/instruction.h"
 #include "cpu/cpu.h"
 
 namespace hw
