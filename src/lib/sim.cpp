@@ -64,13 +64,3 @@ int simRand()
 {
 return rand();
 }
-
-long long simRand64()
-{
-return (static_cast<long long>(rand()) << 32) | rand();
-}
-
-void dump(long long a)
-{
-  printf("%lld", a);
-}

@@ -17,9 +17,10 @@ void IRGen::build(Binary& bin)
   IRBuilder<> builder(context);
   Type *voidType = Type::getVoidTy(context);
   Type *int32Type = Type::getInt32Ty(context);
+  Type *int64Type = Type::getInt64Ty(context);
 
   //[16 x i32] regFile = {0, 0, 0, 0}
-  ArrayType *regFileType = ArrayType::get(int32Type, constant::REG_SIZE);
+  ArrayType *regFileType = ArrayType::get(int64Type, constant::REG_SIZE);
 
   GlobalVariable *regFile = new GlobalVariable(
       *module, regFileType, false, GlobalValue::PrivateLinkage, 0, "regFile");
