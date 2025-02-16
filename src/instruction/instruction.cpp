@@ -41,10 +41,10 @@ hw::Instr_t hw::EQiInstr::instr()
 void hw::EQiInstr::build_ir(uint32_t PC, ir_data data)
 {
   auto* r2_value = load64(_r2, data.regFile, data.builder);
-  auto* r3_value = data.builder.getInt32(_r3);
+  auto* r3_value = data.builder.getInt64(_r3);
   auto* comparison = data.builder.CreateICmpEQ(r2_value, r3_value);
-  auto* result = data.builder.CreateZExt(comparison, Type::getInt32Ty(data.builder.getContext()));
-  auto* r1_ptr = GEP2_32(_r1, data.regFile, data.builder);
+  auto* result = data.builder.CreateZExt(comparison, Type::getInt64Ty(data.builder.getContext()));
+  auto* r1_ptr = GEP2_64(_r1, data.regFile, data.builder);
   data.builder.CreateStore(result, r1_ptr);
 }
 
