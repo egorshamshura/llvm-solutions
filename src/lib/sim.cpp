@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <llvm/Support/raw_ostream.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <SDL2/SDL.h>
@@ -63,4 +64,9 @@ void simPutPixel(int x, int y, int argb)
 int simRand()
 {
 return rand();
+}
+
+void dump(long long x)
+{
+  llvm::outs() << x;
 }

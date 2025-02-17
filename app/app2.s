@@ -1,6 +1,6 @@
 entry
-  ALLOC x1 144
-  ALLOC x2 524288
+  ALLOC x1 288
+  ALLOC x2 1048576
   XOR x0 x0 x0
   ADDi x0 x0 1
   XOR x14 x14 x14

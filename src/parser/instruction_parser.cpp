@@ -158,6 +158,11 @@ Binary InstructionParser::parse(std::ifstream &input)
       pushNArgs<RANDInstr, 1>(result, sstr);
       break;
     }
+    case Instr_t::DUMP:
+    {
+      pushNArgs<DUMPInstr, 1>(result, sstr);
+      break;
+    }
     case Instr_t::EXIT:
     {
       result.push_back(std::make_shared<EXITInstr>());
@@ -224,6 +229,7 @@ std::pair<std::string, std::unordered_map<std::string, size_t>> InstructionParse
       break;
     }
     case Instr_t::RAND:
+    case Instr_t::DUMP:
     {
       input >> arg;
       result += arg + " ";

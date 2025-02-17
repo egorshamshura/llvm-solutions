@@ -42,6 +42,7 @@ enum class Instr_t
   FLUSH,
   RAND,
   ALLOC,
+  DUMP,
   EXIT,
 };
 
@@ -67,6 +68,7 @@ static std::unordered_map<std::string, Instr_t> str2Instr = {
   {"WRITE", Instr_t::WRITE},
   {"WRITEi", Instr_t::WRITEi},
   {"WRITEri", Instr_t::WRITEri},
+  {"DUMP", Instr_t::DUMP},
   {"EXIT", Instr_t::EXIT},
 };
 static std::unordered_map<Instr_t, std::string> instr2Str;
@@ -264,6 +266,14 @@ struct ZeroArityOperator : Instruction
 };
 
 struct RANDInstr : ZeroArityOperator
+{
+  using ZeroArityOperator::ZeroArityOperator;
+  void execute(CPU&) override;
+  Instr_t instr() override;
+  void build_ir(uint32_t, ir_data) override;
+};
+
+struct DUMPInstr : ZeroArityOperator
 {
   using ZeroArityOperator::ZeroArityOperator;
   void execute(CPU&) override;
