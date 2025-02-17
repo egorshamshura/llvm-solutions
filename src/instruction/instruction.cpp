@@ -378,7 +378,7 @@ void hw::WRITEriInstr::build_ir(uint32_t PC, ir_data data)
   auto* mem_ptr = load64(_r1, data.regFile, data.builder);
   auto* offset = load64(_r2, data.regFile, data.builder);
   auto* r3 = data.builder.getInt32(_r3);
-  auto* final_ptr = data.builder.CreateAdd(mem_ptr, offset);
+  auto* final_ptr = data.builder.CreateAdd(mem_ptr, data.builder.CreateMul(offset, data.builder.getInt64(8)));
   data.builder.CreateStore(r3, data.builder.CreateIntToPtr(final_ptr, data.builder.getInt32Ty()->getPointerTo()));
 }
 
