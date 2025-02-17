@@ -327,7 +327,7 @@ void hw::READInstr::build_ir(uint32_t PC, ir_data data)
 
 void hw::WRITEInstr::execute(CPU& cpu)
 {
-  cpu.m_mem[cpu.m_regFile[_r1] + cpu.m_regFile[_r2] / 4] = cpu.m_regFile[_r3];
+  cpu.m_mem[cpu.m_regFile[_r1] + cpu.m_regFile[_r2]] = cpu.m_regFile[_r3];
 }
 
 hw::Instr_t hw::WRITEInstr::instr()
