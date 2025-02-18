@@ -341,7 +341,7 @@ void hw::WRITEInstr::build_ir(uint32_t PC, ir_data data)
   auto* r3 = load64(_r3, data.regFile, data.builder);
   auto* mem_ptr = load64(_r1, data.regFile, data.builder);
   auto* final_ptr = data.builder.CreateAdd(mem_ptr, data.builder.CreateMul(offset, data.builder.getInt64(8)));
-  data.builder.CreateStore(r3, data.builder.CreateIntToPtr(final_ptr, data.builder.getInt32Ty()->getPointerTo()));
+  data.builder.CreateStore(r3, data.builder.CreateIntToPtr(final_ptr, data.builder.getInt64Ty()->getPointerTo()));
 }
 
 void hw::WRITEiInstr::execute(CPU& cpu)
