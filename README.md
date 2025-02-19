@@ -22,7 +22,9 @@
 | READ64 x1 x2 x3        | 3 regs        | x1 = *(x2 + x3) in 64bit     |  
 | RAND64 x1              | 1 reg         | x1 = rand()                  | 
 | DUMP x1                | 1 reg         | writes in console x1         | 
-| FLUSH x1               |               | simFlush()                   | 
+| FLUSH                  |               | simFlush()                   | 
+| BR_COND x1 label       |               | if (x1) nextPC = label       | 
+| EXIT                   |               | returns void from func       | 
 
 
 
