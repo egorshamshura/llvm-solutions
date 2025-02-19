@@ -9,7 +9,7 @@
 int main()
 {
   hw::InstructionParser parser;
-  std::ifstream str("../test/test_apps/t1_alloc_writei.s", std::ios_base::in);
+  std::ifstream str("../app/app2.s", std::ios_base::in);
   auto res = hw::Binary(parser.parse(str));
   hw::CPU cpu;
   hw::IRGen gen;
