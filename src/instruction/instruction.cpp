@@ -10,19 +10,19 @@ extern bool ___temp;
 namespace
 {
 
-Value* GEP2_32(uint32_t arg, GlobalVariable *regFile, IRBuilder<> &builder) 
+Value* GEP2_32(uint64_t arg, GlobalVariable *regFile, IRBuilder<> &builder) 
 {
   ArrayType *regFileType = ArrayType::get(Type::getInt32Ty(builder.getContext()), hw::constant::REG_SIZE);
   return builder.CreateConstGEP2_32(regFileType, regFile, 0, arg);
 }
 
-Value* GEP2_64(uint32_t arg, GlobalVariable *regFile, IRBuilder<> &builder) 
+Value* GEP2_64(uint64_t arg, GlobalVariable *regFile, IRBuilder<> &builder) 
 {
   ArrayType *regFileType = ArrayType::get(Type::getInt64Ty(builder.getContext()), hw::constant::REG_SIZE);
   return builder.CreateConstGEP2_64(regFileType, regFile, 0, arg);
 }
 
-LoadInst* load64(uint32_t arg, GlobalVariable *regFile, IRBuilder<> &builder)
+LoadInst* load64(uint64_t arg, GlobalVariable *regFile, IRBuilder<> &builder)
 {
   return builder.CreateLoad(Type::getInt64Ty(builder.getContext()), GEP2_64(arg, regFile, builder));
 }
@@ -30,7 +30,7 @@ LoadInst* load64(uint32_t arg, GlobalVariable *regFile, IRBuilder<> &builder)
 
 void hw::EQiInstr::execute(CPU& cpu)
 {
-  cpu.m_regFile[_r1] = static_cast<uint32_t>(cpu.m_regFile[_r2] == _r3);
+  cpu.m_regFile[_r1] = static_cast<uint64_t>(cpu.m_regFile[_r2] == _r3);
 }
 
 hw::Instr_t hw::EQiInstr::instr()
@@ -38,7 +38,7 @@ hw::Instr_t hw::EQiInstr::instr()
   return hw::Instr_t::EQi;
 }
 
-void hw::EQiInstr::build_ir(uint32_t PC, ir_data data)
+void hw::EQiInstr::build_ir(uint64_t PC, ir_data data)
 {
   auto* r2_value = load64(_r2, data.regFile, data.builder);
   auto* r3_value = data.builder.getInt64(_r3);
@@ -58,7 +58,7 @@ hw::Instr_t hw::ADDInstr::instr()
   return hw::Instr_t::ADD;
 }
 
-void hw::ADDInstr::build_ir(uint32_t PC, ir_data data)
+void hw::ADDInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateAdd(load64(_r2, data.regFile, data.builder), load64(_r3, data.regFile, data.builder)), GEP2_64(_r1, data.regFile, data.builder));
 }
@@ -73,7 +73,7 @@ hw::Instr_t hw::ANDiInstr::instr()
   return hw::Instr_t::ANDi;
 }
 
-void hw::ANDiInstr::build_ir(uint32_t PC, ir_data data)
+void hw::ANDiInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateAnd(load64(_r2, data.regFile, data.builder), data.builder.getInt64(_r3)),GEP2_64(_r1, data.regFile, data.builder));
 }
@@ -88,7 +88,7 @@ hw::Instr_t hw::ANDInstr::instr()
   return hw::Instr_t::AND;
 }
 
-void hw::ANDInstr::build_ir(uint32_t PC, ir_data data)
+void hw::ANDInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateAnd(load64(_r2, data.regFile, data.builder), load64(_r3, data.regFile, data.builder)),GEP2_64(_r1, data.regFile, data.builder));
 }
@@ -103,7 +103,7 @@ hw::Instr_t hw::SUBInstr::instr()
   return hw::Instr_t::SUB;
 }
 
-void hw::SUBInstr::build_ir(uint32_t PC, ir_data data)
+void hw::SUBInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateSub(load64(_r2, data.regFile, data.builder), load64(_r3, data.regFile, data.builder)), GEP2_64(_r1, data.regFile, data.builder));
 }
@@ -118,7 +118,7 @@ hw::Instr_t hw::MULInstr::instr()
   return hw::Instr_t::MUL;
 }
 
-void hw::MULInstr::build_ir(uint32_t PC, ir_data data)
+void hw::MULInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateMul(load64(_r2, data.regFile, data.builder), load64(_r3, data.regFile, data.builder)), GEP2_64(_r1, data.regFile, data.builder));
 }
@@ -133,7 +133,7 @@ hw::Instr_t hw::DIVInstr::instr()
   return hw::Instr_t::DIV;
 }
 
-void hw::DIVInstr::build_ir(uint32_t PC, ir_data data)
+void hw::DIVInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateSDiv(load64(_r2, data.regFile, data.builder), load64(_r3, data.regFile, data.builder)), GEP2_64(_r1, data.regFile, data.builder));
 }
@@ -148,7 +148,7 @@ hw::Instr_t hw::REMInstr::instr()
   return hw::Instr_t::REM;
 }
 
-void hw::REMInstr::build_ir(uint32_t PC, ir_data data)
+void hw::REMInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateSRem(load64(_r2, data.regFile, data.builder), load64(_r3, data.regFile, data.builder)), GEP2_64(_r1, data.regFile, data.builder));
 }
@@ -163,14 +163,14 @@ hw::Instr_t hw::XORInstr::instr()
   return hw::Instr_t::XOR;
 }
 
-void hw::XORInstr::build_ir(uint32_t PC, ir_data data)
+void hw::XORInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateXor(load64(_r2, data.regFile, data.builder), load64(_r3, data.regFile, data.builder)), GEP2_64(_r1, data.regFile, data.builder));
 }
 
 void hw::INC_NEiInstr::execute(CPU& cpu)
 {
-  cpu.m_regFile[_r1] = static_cast<uint32_t>(++cpu.m_regFile[_r2] != _r3);
+  cpu.m_regFile[_r1] = static_cast<uint64_t>(++cpu.m_regFile[_r2] != _r3);
 }
 
 hw::Instr_t hw::INC_NEiInstr::instr()
@@ -178,7 +178,7 @@ hw::Instr_t hw::INC_NEiInstr::instr()
   return hw::Instr_t::INC_NEi;
 }
 
-void hw::INC_NEiInstr::build_ir(uint32_t PC, ir_data data)
+void hw::INC_NEiInstr::build_ir(uint64_t PC, ir_data data)
 {
   Value *arg1_p = GEP2_64(_r2, data.regFile, data.builder);
   auto& ctx = data.builder.getContext();
@@ -195,7 +195,7 @@ void hw::SUBiInstr::execute(CPU& cpu)
   cpu.m_regFile[_r1] = cpu.m_regFile[_r2] - _r3;
 }
 
-void hw::SUBiInstr::build_ir(uint32_t PC, ir_data data)
+void hw::SUBiInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateSub(load64(_r2, data.regFile, data.builder), data.builder.getInt64(_r3)),GEP2_64(_r1, data.regFile, data.builder));
 }
@@ -217,7 +217,7 @@ hw::Instr_t hw::BR_CONDInstr::instr()
   return hw::Instr_t::BR_COND;
 }
 
-void hw::BR_CONDInstr::build_ir(uint32_t PC, ir_data data)
+void hw::BR_CONDInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateCondBr(
           data.builder.CreateTrunc(load64(_r1, data.regFile, data.builder), data.builder.getInt1Ty()),
@@ -236,7 +236,7 @@ hw::Instr_t hw::PUT_PIXELInstr::instr()
   return hw::Instr_t::PUT_PIXEL;
 }
 
-void hw::PUT_PIXELInstr::build_ir(uint32_t PC, ir_data data)
+void hw::PUT_PIXELInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateCall(data.FuncMap.at("simPutPixelFunc"), {
     data.builder.CreateIntCast(load64(_r1, data.regFile, data.builder), Type::getInt32Ty(data.builder.getContext()), false), 
@@ -255,7 +255,7 @@ hw::Instr_t hw::FLUSHInstr::instr()
   return hw::Instr_t::FLUSH;
 }
 
-void hw::FLUSHInstr::build_ir(uint32_t PC, ir_data data)
+void hw::FLUSHInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateCall(data.FuncMap.at("simFlushFunc"));
 }
@@ -270,14 +270,14 @@ hw::Instr_t hw::EXITInstr::instr()
   return hw::Instr_t::EXIT;
 }
 
-void hw::EXITInstr::build_ir(uint32_t PC, ir_data data)
+void hw::EXITInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateRetVoid();
 }
 
 void hw::RAND64Instr::execute(CPU& cpu)
 {
-  cpu.m_regFile[_r1] = static_cast<uint32_t>(simRand());
+  cpu.m_regFile[_r1] = static_cast<uint64_t>(simRand());
 }
 
 hw::Instr_t hw::RAND64Instr::instr()
@@ -285,7 +285,7 @@ hw::Instr_t hw::RAND64Instr::instr()
   return hw::Instr_t::RAND64;
 }
 
-void hw::RAND64Instr::build_ir(uint32_t PC, ir_data data)
+void hw::RAND64Instr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateIntCast(data.builder.CreateCall(data.FuncMap.at("simRandFunc")), Type::getInt64Ty(data.builder.getContext()), false), GEP2_64(_r1, data.regFile, data.builder));
 }
@@ -301,7 +301,7 @@ hw::Instr_t hw::ALLOCInstr::instr()
   return hw::Instr_t::ALLOC;
 }
 
-void hw::ALLOCInstr::build_ir(uint32_t PC, ir_data data)
+void hw::ALLOCInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateAlloca(Type::getInt8Ty(data.builder.getContext()), data.builder.getInt32(_r2)), GEP2_64(_r1, data.regFile, data.builder));
 }
@@ -316,7 +316,7 @@ hw::Instr_t hw::READ64Instr::instr()
   return hw::Instr_t::READ64;
 }
 
-void hw::READ64Instr::build_ir(uint32_t PC, ir_data data)
+void hw::READ64Instr::build_ir(uint64_t PC, ir_data data)
 {
   auto* base_ptr = load64(_r2, data.regFile, data.builder);
   auto* offset = load64(_r3, data.regFile, data.builder);
@@ -335,7 +335,7 @@ hw::Instr_t hw::WRITE64Instr::instr()
   return hw::Instr_t::WRITE64;
 }
 
-void hw::WRITE64Instr::build_ir(uint32_t PC, ir_data data)
+void hw::WRITE64Instr::build_ir(uint64_t PC, ir_data data)
 {
   auto* offset = load64(_r2, data.regFile, data.builder);
   auto* r3 = load64(_r3, data.regFile, data.builder);
@@ -354,7 +354,7 @@ hw::Instr_t hw::WRITE64iiInstr::instr()
   return hw::Instr_t::WRITE64ii;
 }
 
-void hw::WRITE64iiInstr::build_ir(uint32_t PC, ir_data data)
+void hw::WRITE64iiInstr::build_ir(uint64_t PC, ir_data data)
 {
   auto* mem_ptr = load64(_r1, data.regFile, data.builder);
   auto* offset = data.builder.getInt64(_r2);  
@@ -373,7 +373,7 @@ hw::Instr_t hw::WRITE64riInstr::instr()
   return hw::Instr_t::WRITE64ri;
 }
 
-void hw::WRITE64riInstr::build_ir(uint32_t PC, ir_data data)
+void hw::WRITE64riInstr::build_ir(uint64_t PC, ir_data data)
 {
   auto* mem_ptr = load64(_r1, data.regFile, data.builder);
   auto* offset = load64(_r2, data.regFile, data.builder);
@@ -392,7 +392,7 @@ hw::Instr_t hw::ADDiInstr::instr()
   return hw::Instr_t::ADDi;
 }
 
-void hw::ADDiInstr::build_ir(uint32_t PC, ir_data data)
+void hw::ADDiInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateAdd(load64(_r2, data.regFile, data.builder), data.builder.getInt64(_r3)), GEP2_64(_r1, data.regFile, data.builder));
 }
@@ -407,7 +407,7 @@ hw::Instr_t hw::DUMPInstr::instr()
   return hw::Instr_t::DUMP;
 }
 
-void hw::DUMPInstr::build_ir(uint32_t PC, ir_data data)
+void hw::DUMPInstr::build_ir(uint64_t PC, ir_data data)
 {
   data.builder.CreateCall(data.FuncMap.at("dumpFunc"), {load64(_r1, data.regFile, data.builder)});  
 }

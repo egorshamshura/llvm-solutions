@@ -6,10 +6,14 @@
 #include "llvm/ExecutionEngine/MCJIT.h"
 #include <iostream>
 
-int main()
+int main(int argc, char** argv)
 {
+  if (argc != 2)
+  {
+    std::cerr << "Usage: path/to/app/file" << std::endl;
+  }
   hw::InstructionParser parser;
-  std::ifstream str("../app/app2.s", std::ios_base::in);
+  std::ifstream str(argv[1], std::ios_base::in);
   auto res = hw::Binary(parser.parse(str));
   hw::CPU cpu;
   hw::IRGen gen;

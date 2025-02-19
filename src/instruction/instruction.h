@@ -15,7 +15,7 @@ struct ir_data
 {
   IRBuilder<>& builder;
   GlobalVariable *regFile;
-  std::unordered_map<uint32_t, BasicBlock*>& BBMap;
+  std::unordered_map<uint64_t, BasicBlock*>& BBMap;
   std::unordered_map<std::string, FunctionCallee>& FuncMap;
 };
 
@@ -77,18 +77,18 @@ struct Instruction
 {
   virtual void execute(CPU&) = 0;
   virtual Instr_t instr() = 0;
-  virtual void build_ir(uint32_t PC, ir_data) = 0;
+  virtual void build_ir(uint64_t PC, ir_data) = 0;
 };
 
 /* Binary operations */
 struct BinaryOperator : Instruction
 {
-  BinaryOperator(uint32_t r1, uint32_t r2, uint32_t r3) 
+  BinaryOperator(uint64_t r1, uint64_t r2, uint64_t r3) 
     : _r1(r1), _r2(r2), _r3(r3) {}
 
-  uint32_t _r1;
-  uint32_t _r2;
-  uint32_t _r3;
+  uint64_t _r1;
+  uint64_t _r2;
+  uint64_t _r3;
 };
 
 struct EQiInstr : BinaryOperator
@@ -96,7 +96,7 @@ struct EQiInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct ADDInstr : BinaryOperator
@@ -104,7 +104,7 @@ struct ADDInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct ADDiInstr : BinaryOperator
@@ -112,7 +112,7 @@ struct ADDiInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct ANDiInstr : BinaryOperator
@@ -120,7 +120,7 @@ struct ANDiInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct ANDInstr : BinaryOperator
@@ -128,7 +128,7 @@ struct ANDInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 
@@ -137,7 +137,7 @@ struct SUBInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct MULInstr : BinaryOperator
@@ -145,7 +145,7 @@ struct MULInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct DIVInstr : BinaryOperator
@@ -153,7 +153,7 @@ struct DIVInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct REMInstr : BinaryOperator
@@ -161,7 +161,7 @@ struct REMInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct XORInstr : BinaryOperator
@@ -169,7 +169,7 @@ struct XORInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct INC_NEiInstr : BinaryOperator
@@ -177,7 +177,7 @@ struct INC_NEiInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct SUBiInstr : BinaryOperator
@@ -185,7 +185,7 @@ struct SUBiInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct PUT_PIXELInstr : BinaryOperator
@@ -193,7 +193,7 @@ struct PUT_PIXELInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct READ64Instr : BinaryOperator
@@ -201,7 +201,7 @@ struct READ64Instr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct WRITE64Instr : BinaryOperator
@@ -209,7 +209,7 @@ struct WRITE64Instr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct WRITE64iiInstr : BinaryOperator
@@ -217,7 +217,7 @@ struct WRITE64iiInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct WRITE64riInstr : BinaryOperator
@@ -225,18 +225,18 @@ struct WRITE64riInstr : BinaryOperator
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 /* ---------------- */
 
 /* Unary operations */
 struct UnaryOperator : Instruction
 {
-  UnaryOperator(uint32_t r1, uint32_t r2)
+  UnaryOperator(uint64_t r1, uint64_t r2)
     : _r1(r1), _r2(r2) {}
 
-  uint32_t _r1;
-  uint32_t _r2;
+  uint64_t _r1;
+  uint64_t _r2;
 };
 
 struct BR_CONDInstr : UnaryOperator
@@ -244,7 +244,7 @@ struct BR_CONDInstr : UnaryOperator
   using UnaryOperator::UnaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct ALLOCInstr : UnaryOperator
@@ -252,17 +252,17 @@ struct ALLOCInstr : UnaryOperator
   using UnaryOperator::UnaryOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 /* ---------------------- */
 
 /* ZeroArity instructions */
 struct ZeroArityOperator : Instruction
 {
-  ZeroArityOperator(uint32_t r1)
+  ZeroArityOperator(uint64_t r1)
     : _r1(r1) {}
 
-  uint32_t _r1;
+  uint64_t _r1;
 };
 
 struct RAND64Instr : ZeroArityOperator
@@ -270,7 +270,7 @@ struct RAND64Instr : ZeroArityOperator
   using ZeroArityOperator::ZeroArityOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct DUMPInstr : ZeroArityOperator
@@ -278,7 +278,7 @@ struct DUMPInstr : ZeroArityOperator
   using ZeroArityOperator::ZeroArityOperator;
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 /* ------------------- */
@@ -291,14 +291,14 @@ struct FLUSHInstr : InvokeInst
 {
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 struct EXITInstr : InvokeInst
 {
   void execute(CPU&) override;
   Instr_t instr() override;
-  void build_ir(uint32_t, ir_data) override;
+  void build_ir(uint64_t, ir_data) override;
 };
 
 }; // namespace hw

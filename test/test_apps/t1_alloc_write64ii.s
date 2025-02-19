@@ -1,5 +1,5 @@
 entry
-    ALLOC     x1 144
+    ALLOC     x1 36
     WRITE64ii x1 0   12
     WRITE64ii x1 16 34
     WRITE64ii x1 17 34
