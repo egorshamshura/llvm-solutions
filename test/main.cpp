@@ -1,15 +1,14 @@
 #include "cpu/cpu.h"
 #include "cpu/ir_gen.h"
+#include "llvm/ExecutionEngine/MCJIT.h"
 #include "parser/instruction_parser.h"
+
 #include <fstream>
 #include <ios>
-#include "llvm/ExecutionEngine/MCJIT.h"
 #include <iostream>
 
-int main(int argc, char** argv)
-{
-  if (argc != 2)
-  {
+int main(int argc, char** argv) {
+  if (argc != 2) {
     std::cerr << "Usage: path/to/app/file" << std::endl;
   }
   hw::InstructionParser parser;

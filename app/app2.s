@@ -92,10 +92,10 @@ after_eq
   PUT_PIXEL x3 x4 x13
   INC_NEi x12 x4 256
   BR_COND x12 inner_inner_main_loop
-b2
+out_inner_inner
   INC_NEi x12 x3 512
   BR_COND x12 inner_main_loop
-b3
+out_inner
   FLUSH
   BR_COND x0 main_loop
 exit

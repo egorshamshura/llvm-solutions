@@ -1,9 +1,10 @@
 #pragma once
 
-#include <cstdint>
-#include <unordered_map>
-#include <string>
 #include "llvm/IR/IRBuilder.h"
+
+#include <cstdint>
+#include <string>
+#include <unordered_map>
 
 using namespace llvm;
 
@@ -11,16 +12,14 @@ namespace hw {
 
 struct CPU;
 
-struct ir_data
-{
+struct ir_data {
   IRBuilder<>& builder;
-  GlobalVariable *regFile;
+  GlobalVariable* regFile;
   std::unordered_map<uint64_t, BasicBlock*>& BBMap;
   std::unordered_map<std::string, FunctionCallee>& FuncMap;
 };
 
-enum class Instr_t
-{
+enum class Instr_t {
   EQi,
   ADD,
   ADDi,
@@ -47,235 +46,208 @@ enum class Instr_t
 };
 
 static std::unordered_map<std::string, Instr_t> str2Instr = {
-  {"EQi", Instr_t::EQi},
-  {"ADD", Instr_t::ADD},
-  {"ADDi", Instr_t::ADDi},
-  {"AND", Instr_t::AND},
-  {"ANDi", Instr_t::ANDi},
-  {"SUB", Instr_t::SUB},
-  {"MUL", Instr_t::MUL},
-  {"DIV", Instr_t::DIV},
-  {"REM", Instr_t::REM},
-  {"XOR", Instr_t::XOR},
-  {"INC_NEi", Instr_t::INC_NEi},
-  {"SUBi", Instr_t::SUBi},
-  {"PUT_PIXEL", Instr_t::PUT_PIXEL},
-  {"BR_COND", Instr_t::BR_COND},
-  {"FLUSH", Instr_t::FLUSH},
-  {"RAND64", Instr_t::RAND64},
-  {"ALLOC", Instr_t::ALLOC},
-  {"READ64", Instr_t::READ64},
-  {"WRITE64", Instr_t::WRITE64},
-  {"WRITE64ii", Instr_t::WRITE64ii},
-  {"WRITE64ri", Instr_t::WRITE64ri},
-  {"DUMP", Instr_t::DUMP},
-  {"EXIT", Instr_t::EXIT},
+    {      "EQi",       Instr_t::EQi},
+    {      "ADD",       Instr_t::ADD},
+    {     "ADDi",      Instr_t::ADDi},
+    {      "AND",       Instr_t::AND},
+    {     "ANDi",      Instr_t::ANDi},
+    {      "SUB",       Instr_t::SUB},
+    {      "MUL",       Instr_t::MUL},
+    {      "DIV",       Instr_t::DIV},
+    {      "REM",       Instr_t::REM},
+    {      "XOR",       Instr_t::XOR},
+    {  "INC_NEi",   Instr_t::INC_NEi},
+    {     "SUBi",      Instr_t::SUBi},
+    {"PUT_PIXEL", Instr_t::PUT_PIXEL},
+    {  "BR_COND",   Instr_t::BR_COND},
+    {    "FLUSH",     Instr_t::FLUSH},
+    {   "RAND64",    Instr_t::RAND64},
+    {    "ALLOC",     Instr_t::ALLOC},
+    {   "READ64",    Instr_t::READ64},
+    {  "WRITE64",   Instr_t::WRITE64},
+    {"WRITE64ii", Instr_t::WRITE64ii},
+    {"WRITE64ri", Instr_t::WRITE64ri},
+    {     "DUMP",      Instr_t::DUMP},
+    {     "EXIT",      Instr_t::EXIT},
 };
 static std::unordered_map<Instr_t, std::string> instr2Str;
 
-struct Instruction
-{
+struct Instruction {
   virtual void execute(CPU&) = 0;
   virtual Instr_t instr() = 0;
   virtual void build_ir(uint64_t PC, ir_data) = 0;
 };
 
 /* Binary operations */
-struct BinaryOperator : Instruction
-{
-  BinaryOperator(uint64_t r1, uint64_t r2, uint64_t r3) 
-    : _r1(r1), _r2(r2), _r3(r3) {}
+struct ThreeArityInstruction : Instruction {
+  ThreeArityInstruction(uint64_t r1, uint64_t r2, uint64_t r3) : _r1(r1), _r2(r2), _r3(r3) {}
 
   uint64_t _r1;
   uint64_t _r2;
   uint64_t _r3;
 };
 
-struct EQiInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct EQiInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct ADDInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct ADDInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct ADDiInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct ADDiInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct ANDiInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct ANDiInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct ANDInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct ANDInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-
-struct SUBInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct SUBInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct MULInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct MULInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct DIVInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct DIVInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct REMInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct REMInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct XORInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct XORInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct INC_NEiInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct INC_NEiInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct SUBiInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct SUBiInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct PUT_PIXELInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct PUT_PIXELInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct READ64Instr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct READ64Instr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct WRITE64Instr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct WRITE64Instr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct WRITE64iiInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct WRITE64iiInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct WRITE64riInstr : BinaryOperator
-{
-  using BinaryOperator::BinaryOperator;
+struct WRITE64riInstr : ThreeArityInstruction {
+  using ThreeArityInstruction::ThreeArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
+
 /* ---------------- */
 
 /* Unary operations */
-struct UnaryOperator : Instruction
-{
-  UnaryOperator(uint64_t r1, uint64_t r2)
-    : _r1(r1), _r2(r2) {}
+struct TwoArityInstruction : Instruction {
+  TwoArityInstruction(uint64_t r1, uint64_t r2) : _r1(r1), _r2(r2) {}
 
   uint64_t _r1;
   uint64_t _r2;
 };
 
-struct BR_CONDInstr : UnaryOperator
-{
-  using UnaryOperator::UnaryOperator;
+struct BR_CONDInstr : TwoArityInstruction {
+  using TwoArityInstruction::TwoArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct ALLOCInstr : UnaryOperator
-{
-  using UnaryOperator::UnaryOperator;
+struct ALLOCInstr : TwoArityInstruction {
+  using TwoArityInstruction::TwoArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
+
 /* ---------------------- */
 
 /* ZeroArity instructions */
-struct ZeroArityOperator : Instruction
-{
-  ZeroArityOperator(uint64_t r1)
-    : _r1(r1) {}
+struct OneArityInstruction : Instruction {
+  OneArityInstruction(uint64_t r1) : _r1(r1) {}
 
   uint64_t _r1;
 };
 
-struct RAND64Instr : ZeroArityOperator
-{
-  using ZeroArityOperator::ZeroArityOperator;
+struct RAND64Instr : OneArityInstruction {
+  using OneArityInstruction::OneArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct DUMPInstr : ZeroArityOperator
-{
-  using ZeroArityOperator::ZeroArityOperator;
+struct DUMPInstr : OneArityInstruction {
+  using OneArityInstruction::OneArityInstruction;
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
@@ -284,18 +256,15 @@ struct DUMPInstr : ZeroArityOperator
 /* ------------------- */
 
 /* Invoke instructions */
-struct InvokeInst : Instruction
-{};
+struct InvokeInst : Instruction {};
 
-struct FLUSHInstr : InvokeInst
-{
+struct FLUSHInstr : InvokeInst {
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
 };
 
-struct EXITInstr : InvokeInst
-{
+struct EXITInstr : InvokeInst {
   void execute(CPU&) override;
   Instr_t instr() override;
   void build_ir(uint64_t, ir_data) override;
