@@ -65,7 +65,7 @@ inner_main_loop
   XOR x4 x4 x4
   ADDi x4 x4 1
 inner_inner_main_loop
-  RAND x5 
+  RAND64 x5 
   MUL  x6 x4 x15
   ADD  x6 x6 x3
   ADDi x7 x6 0
@@ -73,7 +73,7 @@ inner_inner_main_loop
   ANDi x8 x5 1
   SUB  x7 x7 x8
   ADDi x7 x7 1
-  READ x8 x2 x6
+  READ64 x8 x2 x6
   EQi x9 x8 0
   BR_COND x9 color_from_eq_zero
 color_from_neq_zero

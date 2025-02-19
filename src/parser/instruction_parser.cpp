@@ -114,9 +114,9 @@ Binary InstructionParser::parse(std::ifstream &input)
       pushNArgs<ALLOCInstr, 2>(result, sstr);
       break;
     }
-    case Instr_t::READ:
+    case Instr_t::READ64:
     {
-      pushNArgs<READInstr, 3>(result, sstr);
+      pushNArgs<READ64Instr, 3>(result, sstr);
       break;
     }
     case Instr_t::WRITE64:
@@ -153,9 +153,9 @@ Binary InstructionParser::parse(std::ifstream &input)
       result.push_back(std::make_shared<FLUSHInstr>());
       break;
     }
-    case Instr_t::RAND:
+    case Instr_t::RAND64:
     {
-      pushNArgs<RANDInstr, 1>(result, sstr);
+      pushNArgs<RAND64Instr, 1>(result, sstr);
       break;
     }
     case Instr_t::DUMP:
@@ -206,7 +206,7 @@ std::pair<std::string, std::unordered_map<std::string, size_t>> InstructionParse
     case Instr_t::INC_NEi:
     case Instr_t::SUBi:
     case Instr_t::PUT_PIXEL:
-    case Instr_t::READ:
+    case Instr_t::READ64:
     case Instr_t::WRITE64:
     case Instr_t::WRITE64ii:
     case Instr_t::WRITE64ri:
@@ -228,7 +228,7 @@ std::pair<std::string, std::unordered_map<std::string, size_t>> InstructionParse
       result += arg + " ";
       break;
     }
-    case Instr_t::RAND:
+    case Instr_t::RAND64:
     case Instr_t::DUMP:
     {
       input >> arg;

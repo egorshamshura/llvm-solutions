@@ -18,6 +18,12 @@
 | ALLOC x1 imm2          | 1 reg,  1 imm | x1 = alloc(imm2)             | 
 | WRITE64 x1 x2 x3       | 3 regs        | *(x1 + x2) = x3 in 64bit     | 
 | WRITE64ii x1 imm2 imm3 | 1 reg,  2 imm | *(x1 + imm2) = imm3 in 64bit | 
+| WRITE64ri x1 x2 imm3   | 2 regs, 1 imm | *(x1 + x2) = imm3 in 64bit   |
+| READ64 x1 x2 x3        | 3 regs        | x1 = *(x2 + x3) in 64bit     |  
+| RAND64 x1              | 1 reg         | x1 = rand()                  | 
+| DUMP x1                | 1 reg         | writes in console x1         | 
+| FLUSH x1               |               | simFlush()                   | 
+
 
 
 

@@ -275,17 +275,17 @@ void hw::EXITInstr::build_ir(uint32_t PC, ir_data data)
   data.builder.CreateRetVoid();
 }
 
-void hw::RANDInstr::execute(CPU& cpu)
+void hw::RAND64Instr::execute(CPU& cpu)
 {
   cpu.m_regFile[_r1] = static_cast<uint32_t>(simRand());
 }
 
-hw::Instr_t hw::RANDInstr::instr()
+hw::Instr_t hw::RAND64Instr::instr()
 {
-  return hw::Instr_t::RAND;
+  return hw::Instr_t::RAND64;
 }
 
-void hw::RANDInstr::build_ir(uint32_t PC, ir_data data)
+void hw::RAND64Instr::build_ir(uint32_t PC, ir_data data)
 {
   data.builder.CreateStore(data.builder.CreateIntCast(data.builder.CreateCall(data.FuncMap.at("simRandFunc")), Type::getInt64Ty(data.builder.getContext()), false), GEP2_64(_r1, data.regFile, data.builder));
 }
@@ -306,17 +306,17 @@ void hw::ALLOCInstr::build_ir(uint32_t PC, ir_data data)
   data.builder.CreateStore(data.builder.CreateAlloca(Type::getInt8Ty(data.builder.getContext()), data.builder.getInt32(_r2)), GEP2_64(_r1, data.regFile, data.builder));
 }
 
-void hw::READInstr::execute(CPU& cpu)
+void hw::READ64Instr::execute(CPU& cpu)
 {
   cpu.m_regFile[_r1] = cpu.m_mem[cpu.m_regFile[_r2] + cpu.m_regFile[_r3]];
 }
 
-hw::Instr_t hw::READInstr::instr()
+hw::Instr_t hw::READ64Instr::instr()
 {
-  return hw::Instr_t::READ;
+  return hw::Instr_t::READ64;
 }
 
-void hw::READInstr::build_ir(uint32_t PC, ir_data data)
+void hw::READ64Instr::build_ir(uint32_t PC, ir_data data)
 {
   auto* base_ptr = load64(_r2, data.regFile, data.builder);
   auto* offset = load64(_r3, data.regFile, data.builder);
