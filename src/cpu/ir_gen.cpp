@@ -56,7 +56,7 @@ void IRGen::build(Binary& bin)
   FunctionCallee dumpFunc =
       module->getOrInsertFunction("dump", dumpType);
 
-  std::unordered_map<uint32_t, BasicBlock*> BBMap;
+  std::unordered_map<uint64_t, BasicBlock*> BBMap;
   std::vector<std::pair<size_t, std::string>> vs;
   for (auto &BB : bin.label2pc) {
     vs.push_back({BB.second, BB.first});
@@ -73,7 +73,7 @@ void IRGen::build(Binary& bin)
     {{"simPutPixelFunc", simPutPixelFunc}, {"simFlushFunc", simFlushFunc},
     {"simRandFunc", simRandFunc}, {"dumpFunc", dumpFunc}};
 
-  uint32_t PC = 0;
+  uint64_t PC = 0;
   builder.SetInsertPoint(BBMap[0]);
   for (auto& instr: bin.instructions)
   {
