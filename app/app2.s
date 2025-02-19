@@ -88,7 +88,7 @@ color_from_neq_zero
 color_from_eq_zero
   WRITE64ri x2 x7 0
 after_eq
-  READ x13 x1 x8
+  READ64 x13 x1 x8
   PUT_PIXEL x3 x4 x13
   INC_NEi x12 x4 256
   BR_COND x12 inner_inner_main_loop
