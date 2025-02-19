@@ -31,5 +31,5 @@
 This project can be build using CMake. 
 
 ## Examples
-![]()
+![](https://github.com/egorshamshura/llvm-solutions/blob/main/assets/llvm-example-1.gif)
 
