@@ -344,17 +344,17 @@ void hw::WRITE64Instr::build_ir(uint32_t PC, ir_data data)
   data.builder.CreateStore(r3, data.builder.CreateIntToPtr(final_ptr, data.builder.getInt64Ty()->getPointerTo()));
 }
 
-void hw::WRITEiInstr::execute(CPU& cpu)
+void hw::WRITE64iiInstr::execute(CPU& cpu)
 {
   cpu.m_mem[cpu.m_regFile[_r1] + _r2] = _r3;
 }
 
-hw::Instr_t hw::WRITEiInstr::instr()
+hw::Instr_t hw::WRITE64iiInstr::instr()
 {
-  return hw::Instr_t::WRITEi;
+  return hw::Instr_t::WRITE64ii;
 }
 
-void hw::WRITEiInstr::build_ir(uint32_t PC, ir_data data)
+void hw::WRITE64iiInstr::build_ir(uint32_t PC, ir_data data)
 {
   auto* mem_ptr = load64(_r1, data.regFile, data.builder);
   auto* offset = data.builder.getInt64(_r2);  
@@ -363,17 +363,17 @@ void hw::WRITEiInstr::build_ir(uint32_t PC, ir_data data)
   data.builder.CreateStore(r3, data.builder.CreateIntToPtr(final_ptr, data.builder.getInt64Ty()->getPointerTo()));
 }
 
-void hw::WRITEriInstr::execute(CPU& cpu)
+void hw::WRITE64riInstr::execute(CPU& cpu)
 {
   cpu.m_mem[cpu.m_regFile[_r1] + cpu.m_regFile[_r2]] = _r3;
 }
 
-hw::Instr_t hw::WRITEriInstr::instr()
+hw::Instr_t hw::WRITE64riInstr::instr()
 {
-  return hw::Instr_t::WRITEri;
+  return hw::Instr_t::WRITE64ri;
 }
 
-void hw::WRITEriInstr::build_ir(uint32_t PC, ir_data data)
+void hw::WRITE64riInstr::build_ir(uint32_t PC, ir_data data)
 {
   auto* mem_ptr = load64(_r1, data.regFile, data.builder);
   auto* offset = load64(_r2, data.regFile, data.builder);

@@ -36,8 +36,8 @@ enum class Instr_t
   PUT_PIXEL,
   READ,
   WRITE64,
-  WRITEi,
-  WRITEri,
+  WRITE64ii,
+  WRITE64ri,
   BR_COND,
   FLUSH,
   RAND,
@@ -66,8 +66,8 @@ static std::unordered_map<std::string, Instr_t> str2Instr = {
   {"ALLOC", Instr_t::ALLOC},
   {"READ", Instr_t::READ},
   {"WRITE64", Instr_t::WRITE64},
-  {"WRITEi", Instr_t::WRITEi},
-  {"WRITEri", Instr_t::WRITEri},
+  {"WRITE64ii", Instr_t::WRITE64ii},
+  {"WRITE64ri", Instr_t::WRITE64ri},
   {"DUMP", Instr_t::DUMP},
   {"EXIT", Instr_t::EXIT},
 };
@@ -212,7 +212,7 @@ struct WRITE64Instr : BinaryOperator
   void build_ir(uint32_t, ir_data) override;
 };
 
-struct WRITEiInstr : BinaryOperator
+struct WRITE64iiInstr : BinaryOperator
 {
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;
@@ -220,7 +220,7 @@ struct WRITEiInstr : BinaryOperator
   void build_ir(uint32_t, ir_data) override;
 };
 
-struct WRITEriInstr : BinaryOperator
+struct WRITE64riInstr : BinaryOperator
 {
   using BinaryOperator::BinaryOperator;
   void execute(CPU&) override;

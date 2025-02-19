@@ -124,9 +124,9 @@ Binary InstructionParser::parse(std::ifstream &input)
       pushNArgs<WRITE64Instr, 3>(result, sstr);
       break;
     }
-    case Instr_t::WRITEi:
+    case Instr_t::WRITE64ii:
     {
-      pushNArgs<WRITEiInstr, 3>(result, sstr);
+      pushNArgs<WRITE64iiInstr, 3>(result, sstr);
       break;
     }
     case Instr_t::AND:
@@ -134,9 +134,9 @@ Binary InstructionParser::parse(std::ifstream &input)
       pushNArgs<ANDInstr, 3>(result, sstr);
       break;
     }
-    case Instr_t::WRITEri:
+    case Instr_t::WRITE64ri:
     {
-      pushNArgs<WRITEriInstr, 3>(result, sstr);
+      pushNArgs<WRITE64riInstr, 3>(result, sstr);
       break;
     }
     case Instr_t::BR_COND:
@@ -208,8 +208,8 @@ std::pair<std::string, std::unordered_map<std::string, size_t>> InstructionParse
     case Instr_t::PUT_PIXEL:
     case Instr_t::READ:
     case Instr_t::WRITE64:
-    case Instr_t::WRITEi:
-    case Instr_t::WRITEri:
+    case Instr_t::WRITE64ii:
+    case Instr_t::WRITE64ri:
     {
       input >> arg;
       result += arg + " ";
