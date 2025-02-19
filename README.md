@@ -1,5 +1,5 @@
 # llvm-course task 4 solution
-## my ISA specification
+## My ISA specification
 | Command                | Description   | Operation                    |
 | ---------------------- | ------------- | ---------------------------- |
 | ADD  x1 x2 x3          | 3 regs        | x1 = x2 + x3                 |
@@ -27,5 +27,9 @@
 | EXIT                   |               | returns void from func       | 
 
 
+## Build
+This project can be build using CMake. 
 
+## Examples
+![]()
 
