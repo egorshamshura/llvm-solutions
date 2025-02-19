@@ -325,17 +325,17 @@ void hw::READInstr::build_ir(uint32_t PC, ir_data data)
   data.builder.CreateStore(loaded_value, GEP2_64(_r1, data.regFile, data.builder));
 }
 
-void hw::WRITEInstr::execute(CPU& cpu)
+void hw::WRITE64Instr::execute(CPU& cpu)
 {
   cpu.m_mem[cpu.m_regFile[_r1] + cpu.m_regFile[_r2]] = cpu.m_regFile[_r3];
 }
 
-hw::Instr_t hw::WRITEInstr::instr()
+hw::Instr_t hw::WRITE64Instr::instr()
 {
-  return hw::Instr_t::WRITE;
+  return hw::Instr_t::WRITE64;
 }
 
-void hw::WRITEInstr::build_ir(uint32_t PC, ir_data data)
+void hw::WRITE64Instr::build_ir(uint32_t PC, ir_data data)
 {
   auto* offset = load64(_r2, data.regFile, data.builder);
   auto* r3 = load64(_r3, data.regFile, data.builder);
@@ -346,7 +346,7 @@ void hw::WRITEInstr::build_ir(uint32_t PC, ir_data data)
 
 void hw::WRITEiInstr::execute(CPU& cpu)
 {
-  cpu.m_mem[cpu.m_regFile[_r1] + _r2 / 8] = _r3;
+  cpu.m_mem[cpu.m_regFile[_r1] + _r2] = _r3;
 }
 
 hw::Instr_t hw::WRITEiInstr::instr()
@@ -359,7 +359,7 @@ void hw::WRITEiInstr::build_ir(uint32_t PC, ir_data data)
   auto* mem_ptr = load64(_r1, data.regFile, data.builder);
   auto* offset = data.builder.getInt64(_r2);  
   auto* r3 = data.builder.getInt64(_r3);
-  auto* final_ptr = data.builder.CreateAdd(mem_ptr, offset);
+  auto* final_ptr = data.builder.CreateAdd(mem_ptr, data.builder.CreateMul(offset, data.builder.getInt64(8)));
   data.builder.CreateStore(r3, data.builder.CreateIntToPtr(final_ptr, data.builder.getInt64Ty()->getPointerTo()));
 }
 
