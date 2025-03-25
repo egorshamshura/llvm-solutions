@@ -11,12 +11,7 @@
 #include "Token.h"
 #include "lib/sim.h"
 
-namespace 
-{
-
-} // anonymous namespace
-
-TEST(simplelang_lexer, return)
+TEST(simplelang, simple)
 {
     std::ifstream stream("../test/test_grammar/text");
     antlr4::ANTLRInputStream input(stream);
