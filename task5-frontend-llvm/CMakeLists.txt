@@ -21,6 +21,7 @@ antlr4cpp_process_grammar(demo hw5
   ${CMAKE_CURRENT_SOURCE_DIR}/grammar/SimpleLangParser.g4)
 # include generated files in project environment
 include_directories(${antlr4cpp_include_dirs_hw5})
+message("${antlr4cpp_include_dirs_hw5}")
 
 llvm_map_components_to_libnames(
   LLVM_LIBRARIES
