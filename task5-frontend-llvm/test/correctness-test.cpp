@@ -1,4 +1,3 @@
-#include "gtest/gtest.h"
 #include "llvm/IR/Type.h"
 #include "llvm/ExecutionEngine/ExecutionEngine.h"
 #include "llvm/ExecutionEngine/GenericValue.h"
@@ -12,7 +11,7 @@
 #include "Token.h"
 #include "lib/sim.h"
 
-TEST(simplelang, simple)
+int main()
 {
     std::ifstream stream("test/app1");
     antlr4::ANTLRInputStream input(stream);
