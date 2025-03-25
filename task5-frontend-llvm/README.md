@@ -17,7 +17,7 @@ while (id1 < id2) {
   funcBody;
 }
 
-Variable declaration (should be in the begging of function):
+Variable declaration (should be in the beginning of function):
 ------------------------------------------------------------
 var id = expression;
 
