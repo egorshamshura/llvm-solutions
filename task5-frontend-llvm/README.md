@@ -56,7 +56,7 @@ func app() -> int {
 			endX = 512;
 			while (x < endX) {
 				colour = x * y * step;
-				put_pixel(x, y, colour);
+				put_pixel(x y colour);
 				x = x + 1;
 			}
 			y = y + 1;

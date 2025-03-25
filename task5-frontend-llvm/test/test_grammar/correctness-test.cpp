@@ -22,14 +22,10 @@ TEST(simplelang, simple)
     antlr4::CommonTokenStream tokens(&lexer);
 
     tokens.fill();
-    for (antlr4::Token* token : tokens.getTokens()) {
-        std::cout << token->toString() << " " << token->getType() << std::endl;
-    }
     hw5::SimpleLangParser parser(&tokens);
 
     hw5::SimpleLangParser::MainContext* tree = parser.main();
 
-    std::cout << tree->toStringTree(&parser) << std::endl;
     llvm::LLVMContext context;
     llvm::IRBuilder<> builder(context);
     llvm::Module *module = new llvm::Module("app.c", context);
@@ -48,8 +44,6 @@ TEST(simplelang, simple)
     llvm::Function* app = std::any_cast<llvm::Function*>(vis.visitMain(tree));
     llvm::outs() << "[LLVM IR]\n";
     module->print(llvm::outs(), nullptr);
-    llvm::outs() << "[app]\n";
-    app->print(llvm::outs(), nullptr);
     llvm::outs() << "\n";
     bool verif = llvm::verifyModule(*module, &llvm::outs());
     llvm::outs() << "[VERIFICATION] " << (!verif ? "OK\n\n" : "FAIL\n\n");

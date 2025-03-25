@@ -3,7 +3,6 @@
 
 std::any hw5::SimpleLangVisitor::visitMain(hw5::SimpleLangParser::MainContext *ctx)
 {
-    llvm::outs() << "visitMain:\n";
     for (size_t i = 0; i != ctx->funcDecl().size(); ++i)
         visit(ctx->funcDecl(i));
     return functions["app"];
@@ -11,7 +10,6 @@ std::any hw5::SimpleLangVisitor::visitMain(hw5::SimpleLangParser::MainContext *c
 
 std::any hw5::SimpleLangVisitor::visitFuncDecl(hw5::SimpleLangParser::FuncDeclContext *ctx) 
 {
-    llvm::outs() << "visitFuncDecl:\n";
     std::string functionName = std::string(ctx->funcName()->ID()->getText());
     currFunc = functionName;
     varsInFuncs.insert({functionName, {}});
@@ -38,26 +36,22 @@ std::any hw5::SimpleLangVisitor::visitFuncDecl(hw5::SimpleLangParser::FuncDeclCo
 
 std::any hw5::SimpleLangVisitor::visitFuncArgs(hw5::SimpleLangParser::FuncArgsContext *ctx) 
 {
-    llvm::outs() << "visitFuncArgs: \n";
     return "";
 }
 
 std::any hw5::SimpleLangVisitor::visitReturn_type(hw5::SimpleLangParser::Return_typeContext *ctx)
 {
-    llvm::outs() << "visitReturn_type: \n";
     return "";
 }
 
 std::any hw5::SimpleLangVisitor::visitFuncBody(hw5::SimpleLangParser::FuncBodyContext *ctx)
 {
-    llvm::outs() << "visitFuncBody: \n";
     visit(ctx->expr());
     return "";
 }
 
 std::any hw5::SimpleLangVisitor::visitExpr(hw5::SimpleLangParser::ExprContext *ctx) 
 {
-    llvm::outs() << "visitExpr: \n";
     for (size_t i = 0; i != ctx->expr_line().size(); ++i)
         visit(ctx->expr_line(i));
     return "";
@@ -79,7 +73,6 @@ void hw5::SimpleLangVisitor::generateWhile(hw5::SimpleLangParser::Expr_lineConte
 
 std::any hw5::SimpleLangVisitor::visitExpr_line(hw5::SimpleLangParser::Expr_lineContext *ctx)
 {
-    llvm::outs() << "visitExpr_line: \n";
     if (ctx->varDecl()) {
         std::string varName = ctx->varDecl()->ID()->getText();
         currVarName = varName;
@@ -93,7 +86,6 @@ std::any hw5::SimpleLangVisitor::visitExpr_line(hw5::SimpleLangParser::Expr_line
     if (ctx->funcCall())
         visit(ctx->funcCall());
     if (ctx->cond_expr()) {    
-        llvm::outs() << "here while: \n";
         generateWhile(ctx);    
     }
     return "";
@@ -101,14 +93,12 @@ std::any hw5::SimpleLangVisitor::visitExpr_line(hw5::SimpleLangParser::Expr_line
 
 std::any hw5::SimpleLangVisitor::visitVarDecl(hw5::SimpleLangParser::VarDeclContext *ctx)
 {
-    llvm::outs() << "visitVarDecl: \n";
     varsInFuncs[currFunc][currVarName] = std::any_cast<llvm::Value*>(visit(ctx->primary_expr()));
     return varsInFuncs[currFunc][currVarName];
 }
 
 std::any hw5::SimpleLangVisitor::visitFuncCall(hw5::SimpleLangParser::FuncCallContext *ctx)
 {
-    llvm::outs() << "visitFuncCall: " << ctx->ID()->getText() << "\n";
     std::vector<llvm::Value*> args;
     for (size_t arg = 0; arg != ctx->funcArgs()->ID().size(); ++arg) {
         args.push_back(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][std::string(ctx->funcArgs()->ID(arg)->getText())]));
@@ -118,17 +108,13 @@ std::any hw5::SimpleLangVisitor::visitFuncCall(hw5::SimpleLangParser::FuncCallCo
 
 std::any hw5::SimpleLangVisitor::visitPrimary_expr(hw5::SimpleLangParser::Primary_exprContext *ctx)
 {
-    llvm::outs() << "visitPrimary_expr: \n";
     if (ctx->INT()) {
-        llvm::outs() << "int " << std::stoi(ctx->INT()->getText()) << "\n";
         return static_cast<llvm::Value*>(llvm::ConstantInt::get(llvm::Type::getInt32Ty(*ctxLLVM), std::stoi(ctx->INT()->getText())));
     }
     if (ctx->ID() && !ctx->funcArgs()) {
-        llvm::outs() << "id " << ctx->ID()->getText() << "\n" ;
         return static_cast<llvm::Value*>(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->ID()->getText()]));
     }
     if (ctx->ID() && ctx->funcArgs()) {
-        llvm::outs() << "func \n";
         std::vector<llvm::Value*> args;
         for (size_t arg = 0; arg != ctx->funcArgs()->ID().size(); ++arg) {
             
@@ -137,7 +123,6 @@ std::any hw5::SimpleLangVisitor::visitPrimary_expr(hw5::SimpleLangParser::Primar
         return static_cast<llvm::Value*>(builder->CreateCall(module->getFunction(ctx->ID()->getText()), args));
     }
     if (ctx->MUL() && ctx->primary_expr().size() == 2) {
-        llvm::outs() << "mul \n";
         return static_cast<llvm::Value*>(builder->CreateMul(std::any_cast<llvm::Value*>(visit(ctx->primary_expr(0))), std::any_cast<llvm::Value*>(visit(ctx->primary_expr(1)))));
     }
     if (ctx->DIV()) {
