@@ -32,7 +32,6 @@ private:
     llvm::LLVMContext *ctxLLVM;
     llvm::IRBuilder<> *builder;
     llvm::Module *module;
-    size_t currentBB = 0;
 
     void generateWhile(hw5::SimpleLangParser::Expr_lineContext *ctx);
 };
