@@ -1,0 +1,31 @@
+func square(x) -> int {
+	var result = x * x;
+	return result;
+}
+
+func id(x) -> int {
+	return x;
+}
+
+func main() -> int {
+	var step = 0;
+	var endStep = 1000;
+	while (step < endStep) {
+		var y = 0;
+		var endY = 256;
+		while (y < endY) {
+			var x = 0;
+			var endX = 512;
+			while (x < endX) {
+				var colour = x * y * step;
+				put_pixel(x, y, colour);
+				x = x + 1;
+			}
+			y = y + 1;
+		}
+		flush();
+		step = step + 1;
+	}
+	var res = 111;
+	return res;
+}
