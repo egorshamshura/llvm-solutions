@@ -2,6 +2,7 @@
 #include "llvm/IR/Type.h"
 #include "llvm/ExecutionEngine/ExecutionEngine.h"
 #include "llvm/ExecutionEngine/GenericValue.h"
+#include "llvm/ExecutionEngine/MCJIT.h"
 #include <sstream>
 #include "llvm/IR/Verifier.h"
 
@@ -47,7 +48,6 @@ TEST(simplelang, simple)
     llvm::outs() << "\n";
     bool verif = llvm::verifyModule(*module, &llvm::outs());
     llvm::outs() << "[VERIFICATION] " << (!verif ? "OK\n\n" : "FAIL\n\n");
-    llvm::outs() << "[EE] Run\n";
     LLVMInitializeNativeTarget();
     LLVMInitializeNativeAsmPrinter();
 
@@ -66,8 +66,9 @@ TEST(simplelang, simple)
     simInit();
 
     llvm::ArrayRef<llvm::GenericValue> noargs;
+    llvm::outs() << "\n#[Running code]\n";
     llvm::GenericValue v = ee->runFunction(main, noargs);
-    llvm::outs() << "[EE] Result: " << v.IntVal << "\n";
+    llvm::outs() << "#[Code was run]\n";
 
     simExit();
 }
