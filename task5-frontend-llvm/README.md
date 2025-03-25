@@ -68,3 +68,6 @@ func app() -> int {
 	return res;
 }
 ```
+
+## Examples
+![](https://github.com/egorshamshura/llvm-solutions/blob/main/assets/llvm-example-2.gif)
