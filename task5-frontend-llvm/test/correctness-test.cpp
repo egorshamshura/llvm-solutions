@@ -14,7 +14,7 @@
 
 TEST(simplelang, simple)
 {
-    std::ifstream stream("../test/test_grammar/text");
+    std::ifstream stream("test/app1");
     antlr4::ANTLRInputStream input(stream);
 
     hw5::SimpleLangLexer lexer(&input);
@@ -71,6 +71,5 @@ TEST(simplelang, simple)
     llvm::outs() << "\n#[Running code]\n";
     llvm::GenericValue v = ee->runFunction(app, noargs);
     llvm::outs() << "#[Code was run]\n";
-
     simExit();
 }

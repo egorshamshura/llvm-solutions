@@ -39,7 +39,7 @@ src/*.cpp src/*.h
 src/lib/*.cpp src/lib/*.h 
 src/visitor/*.cpp src/visitor/*.h)
 
-file(GLOB TEST_SRC test/test_grammar/*.cpp)
+file(GLOB TEST_SRC test/*.cpp)
 add_executable(tests ${TEST_SRC} ${SOLUTION_SRC} ${antlr4cpp_src_files_hw5})
 add_dependencies(tests antlr4cpp antlr4cpp_generation_hw5)
 target_link_libraries(tests PRIVATE ${SDL2_LIBRARIES} ${LLVM_LIBRARIES} antlr4-runtime GTest::gtest GTest::gtest_main) 

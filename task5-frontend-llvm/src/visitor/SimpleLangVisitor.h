@@ -15,8 +15,8 @@ struct SimpleLangVisitor : SimpleLangParserBaseVisitor
     std::any visitMain(hw5::SimpleLangParser::MainContext *ctx) override;
     std::any visitFuncDecl(hw5::SimpleLangParser::FuncDeclContext *ctx) override;
     std::any visitFuncName(hw5::SimpleLangParser::FuncNameContext *ctx) override { return ""; }
-    std::any visitFuncArgs(hw5::SimpleLangParser::FuncArgsContext *ctx) override;
-    std::any visitReturn_type(hw5::SimpleLangParser::Return_typeContext *ctx) override;
+    std::any visitFuncArgs(hw5::SimpleLangParser::FuncArgsContext *ctx) override { return ""; }
+    std::any visitReturn_type(hw5::SimpleLangParser::Return_typeContext *ctx) override { return ""; }
     std::any visitFuncBody(hw5::SimpleLangParser::FuncBodyContext *ctx) override;
     std::any visitExpr(hw5::SimpleLangParser::ExprContext *ctx) override;
     std::any visitExpr_line(hw5::SimpleLangParser::Expr_lineContext *ctx) override;

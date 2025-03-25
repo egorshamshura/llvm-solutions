@@ -27,20 +27,7 @@ std::any hw5::SimpleLangVisitor::visitFuncDecl(hw5::SimpleLangParser::FuncDeclCo
         builder->CreateStore(static_cast<llvm::Value*>(func->getArg(arg)), varsInFuncs[functionName][ctx->funcArgs()->ID(arg)->getText()]);
     }
     visit(ctx->funcBody());
-
-    visit(ctx->funcArgs());
-    visit(ctx->return_type());
     builder->CreateRet(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->ID()->getText()]));
-    return "";
-}
-
-std::any hw5::SimpleLangVisitor::visitFuncArgs(hw5::SimpleLangParser::FuncArgsContext *ctx) 
-{
-    return "";
-}
-
-std::any hw5::SimpleLangVisitor::visitReturn_type(hw5::SimpleLangParser::Return_typeContext *ctx)
-{
     return "";
 }
 
