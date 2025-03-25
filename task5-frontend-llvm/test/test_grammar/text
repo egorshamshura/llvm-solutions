@@ -7,17 +7,21 @@ func id(x) -> int {
 	return x;
 }
 
-func main() -> int {
+func app() -> int {
 	var step = 0;
 	var endStep = 1000;
+	var y = 0;
+	var endY = 256;
+	var x = 0;
+	var endX = 512;
+	var colour = x * y * step;
 	while (step < endStep) {
-		var y = 0;
-		var endY = 256;
+		y = 0;
 		while (y < endY) {
-			var x = 0;
-			var endX = 512;
+			x = 0;
+			endX = 512;
 			while (x < endX) {
-				var colour = x * y * step;
+				colour = x * y * step;
 				put_pixel(x, y, colour);
 				x = x + 1;
 			}
@@ -26,6 +30,6 @@ func main() -> int {
 		flush();
 		step = step + 1;
 	}
-	var res = 111;
+	var res = 0;
 	return res;
 }

@@ -42,9 +42,14 @@ TEST(simplelang, simple)
     llvm::ArrayRef<llvm::Type*> simFlushParamTypes = {};
     llvm::FunctionType *simFlushType = llvm::FunctionType::get(llvm::Type::getVoidTy(context), simFlushParamTypes, false);
     module->getOrInsertFunction("flush", simFlushType);
-    llvm::Function* main = std::any_cast<llvm::Function*>(vis.visitMain(tree));
+    llvm::ArrayRef<llvm::Type*> dumpParamTypes = {llvm::Type::getInt32Ty(context)};
+    llvm::FunctionType *dumpType = llvm::FunctionType::get(llvm::Type::getVoidTy(context), dumpParamTypes, false);
+    module->getOrInsertFunction("dump", dumpType);
+    llvm::Function* app = std::any_cast<llvm::Function*>(vis.visitMain(tree));
     llvm::outs() << "[LLVM IR]\n";
     module->print(llvm::outs(), nullptr);
+    llvm::outs() << "[app]\n";
+    app->print(llvm::outs(), nullptr);
     llvm::outs() << "\n";
     bool verif = llvm::verifyModule(*module, &llvm::outs());
     llvm::outs() << "[VERIFICATION] " << (!verif ? "OK\n\n" : "FAIL\n\n");
@@ -54,10 +59,13 @@ TEST(simplelang, simple)
     llvm::ExecutionEngine *ee = llvm::EngineBuilder(std::unique_ptr<llvm::Module>(module)).create();
     ee->InstallLazyFunctionCreator([=](const std::string &fnName) -> void * {
         if (fnName == "put_pixel") {
-        return reinterpret_cast<void *>(simPutPixel);
+            return reinterpret_cast<void *>(simPutPixel);
         }
         if (fnName == "flush") {
-        return reinterpret_cast<void *>(simFlush);
+            return reinterpret_cast<void *>(simFlush);
+        }
+        if (fnName == "dump") {
+            return reinterpret_cast<void *>(dump);
         }
         return nullptr;
     });
@@ -67,7 +75,7 @@ TEST(simplelang, simple)
 
     llvm::ArrayRef<llvm::GenericValue> noargs;
     llvm::outs() << "\n#[Running code]\n";
-    llvm::GenericValue v = ee->runFunction(main, noargs);
+    llvm::GenericValue v = ee->runFunction(app, noargs);
     llvm::outs() << "#[Code was run]\n";
 
     simExit();

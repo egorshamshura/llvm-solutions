@@ -1,12 +1,12 @@
 #include "SimpleLangVisitor.h"
-#include <llvm-18/llvm/IR/Type.h>
+#include <llvm/IR/Type.h>
 
 std::any hw5::SimpleLangVisitor::visitMain(hw5::SimpleLangParser::MainContext *ctx)
 {
     llvm::outs() << "visitMain:\n";
     for (size_t i = 0; i != ctx->funcDecl().size(); ++i)
         visit(ctx->funcDecl(i));
-    return functions["main"];
+    return functions["app"];
 }
 
 std::any hw5::SimpleLangVisitor::visitFuncDecl(hw5::SimpleLangParser::FuncDeclContext *ctx) 
