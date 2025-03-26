@@ -47,18 +47,14 @@ func id(x) -> int {
 func app() -> int {
 	var step = 0;
 	var endStep = 1000;
-	var y = 0;
-	var endY = 256;
-	var x = 0;
-	var endX = 512;
-	var colour = x * y * step;
 	while (step < endStep) {
-		y = 0;
+		var y = 0;
+		var endY = 256;
 		while (y < endY) {
-			x = 0;
+			var x = 0;
 			endX = 512;
 			while (x < endX) {
-				colour = x * y * step;
+				var colour = x * y * step;
 				put_pixel(x y colour);
 				x = x + 1;
 			}

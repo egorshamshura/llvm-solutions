@@ -4,8 +4,10 @@
 
 std::any hw5::SimpleLangVisitor::visitMain(hw5::SimpleLangParser::MainContext *ctx)
 {
+    valuesInBBs.push_back({});
     for (size_t i = 0; i != ctx->funcDecl().size(); ++i)
         visit(ctx->funcDecl(i));
+    valuesInBBs.pop_back();
     return functions["app"];
 }
 
@@ -51,7 +53,12 @@ void hw5::SimpleLangVisitor::generateWhile(hw5::SimpleLangParser::Expr_lineConte
     llvm::Value *Cmp = builder->CreateICmpSLT(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->cond_expr()->ID(0)->getText()]), builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->cond_expr()->ID(1)->getText()]));
     builder->CreateCondBr(Cmp, WhileBodyBB, WhileEndBB);
     builder->SetInsertPoint(WhileBodyBB);
+    valuesInBBs.push_back({});
     visit(ctx->expr());
+    for (auto x: valuesInBBs.back()) {
+       builder->CreateLifetimeEnd(x);
+    }
+    valuesInBBs.pop_back();
     builder->CreateBr(WhileCondBB);
     builder->SetInsertPoint(WhileEndBB);
 }
@@ -62,6 +69,8 @@ std::any hw5::SimpleLangVisitor::visitExpr_line(hw5::SimpleLangParser::Expr_line
         std::string varName = ctx->varDecl()->ID()->getText();
         currVarName = varName;
         llvm::Value *i = builder->CreateAlloca(llvm::Type::getInt32Ty(*ctxLLVM), nullptr);
+        builder->CreateLifetimeStart(i);
+        valuesInBBs[valuesInBBs.size() - 1].push_back(i);
         varsInFuncs[currFunc][currVarName] = i;
         builder->CreateStore(std::any_cast<llvm::Value*>(visit(ctx->varDecl()->primary_expr())), i);
     }
