@@ -86,11 +86,7 @@ std::any hw5::SimpleLangVisitor::visitVarDecl(hw5::SimpleLangParser::VarDeclCont
 
 std::any hw5::SimpleLangVisitor::visitFuncCall(hw5::SimpleLangParser::FuncCallContext *ctx)
 {
-    std::vector<llvm::Value*> args;
-    for (size_t arg = 0; arg != ctx->funcArgs()->ID().size(); ++arg) {
-        args.push_back(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][std::string(ctx->funcArgs()->ID(arg)->getText())]));
-    }
-    return static_cast<llvm::Value*>(builder->CreateCall(module->getFunction(ctx->ID()->getText()), args));
+    return generateFuncCall(ctx);
 }
 
 std::any hw5::SimpleLangVisitor::visitPrimary_expr(hw5::SimpleLangParser::Primary_exprContext *ctx)
@@ -102,12 +98,7 @@ std::any hw5::SimpleLangVisitor::visitPrimary_expr(hw5::SimpleLangParser::Primar
         return static_cast<llvm::Value*>(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->ID()->getText()]));
     }
     if (ctx->ID() && ctx->funcArgs()) {
-        std::vector<llvm::Value*> args;
-        for (size_t arg = 0; arg != ctx->funcArgs()->ID().size(); ++arg) {
-            
-            args.push_back(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][std::string(ctx->funcArgs()->ID(arg)->getText())]));
-        }
-        return static_cast<llvm::Value*>(builder->CreateCall(module->getFunction(ctx->ID()->getText()), args));
+        return generateFuncCall(ctx);
     }
     if (ctx->MUL() && ctx->primary_expr().size() == 2) {
         return static_cast<llvm::Value*>(builder->CreateMul(std::any_cast<llvm::Value*>(visit(ctx->primary_expr(0))), std::any_cast<llvm::Value*>(visit(ctx->primary_expr(1)))));

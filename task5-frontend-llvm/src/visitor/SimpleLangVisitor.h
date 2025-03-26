@@ -34,5 +34,14 @@ private:
     llvm::Module *module;
 
     void generateWhile(hw5::SimpleLangParser::Expr_lineContext *ctx);
+
+    template<typename T>
+    llvm::Value* generateFuncCall(T* ctx) {
+        std::vector<llvm::Value*> args;
+        for (size_t arg = 0; arg != ctx->funcArgs()->ID().size(); ++arg) {
+            args.push_back(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][std::string(ctx->funcArgs()->ID(arg)->getText())]));
+        }
+        return static_cast<llvm::Value*>(builder->CreateCall(module->getFunction(ctx->ID()->getText()), args));
+    }
 };
 } // hw5 namespace
