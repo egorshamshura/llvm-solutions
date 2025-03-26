@@ -52,7 +52,7 @@ func app() -> int {
 		var endY = 256;
 		while (y < endY) {
 			var x = 0;
-			endX = 512;
+			var endX = 512;
 			while (x < endX) {
 				var colour = x * y * step;
 				put_pixel(x y colour);
@@ -62,6 +62,7 @@ func app() -> int {
 		}
 		flush();
 		step = step + 1;
+		dump(step);
 	}
 	var res = 0;
 	return res;
