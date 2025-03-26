@@ -30,6 +30,10 @@ int
 id(args...) // function call
 ```
 
+## Memory management
+Every variable that is declared with the "var" keyword is allocated on the stack. Before being used in an expression or anywhere else, it is loaded from the stack. It is somewhat similar to the initial LLVM IR, before the scalar replacement pass for aggregates.
+
+
 ## Test programm:
 ```
 func square(x) -> int {
