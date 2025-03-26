@@ -13,7 +13,7 @@
 
 int main()
 {
-    std::ifstream stream("test/app1");
+    std::ifstream stream("app/app1");
     antlr4::ANTLRInputStream input(stream);
 
     hw5::SimpleLangLexer lexer(&input);

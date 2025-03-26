@@ -1,5 +1,0 @@
-x0 - always true
-x1 - framebuffer
-x2 - pixels
-x14 - SIM_Y_SIZE == 256
-x15 - SIM_X_SIZE == 512
