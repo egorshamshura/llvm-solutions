@@ -1,4 +1,5 @@
 #include "SimpleLangVisitor.h"
+#include <algorithm>
 #include <llvm/IR/Type.h>
 
 std::any hw5::SimpleLangVisitor::visitMain(hw5::SimpleLangParser::MainContext *ctx)
@@ -13,10 +14,7 @@ std::any hw5::SimpleLangVisitor::visitFuncDecl(hw5::SimpleLangParser::FuncDeclCo
     std::string functionName = std::string(ctx->funcName()->ID()->getText());
     currFunc = functionName;
     varsInFuncs.insert({functionName, {}});
-    std::vector<llvm::Type*> funcParamTypes;
-    for (size_t arg = 0; arg != ctx->funcArgs()->ID().size(); ++arg) {
-      funcParamTypes.push_back(llvm::Type::getInt32Ty(*ctxLLVM));
-    }
+    std::vector<llvm::Type*> funcParamTypes(ctx->funcArgs()->ID().size(), llvm::Type::getInt32Ty(*ctxLLVM));
     llvm::FunctionType *funcType = llvm::FunctionType::get(llvm::Type::getInt32Ty(*ctxLLVM), funcParamTypes, false);
     llvm::Function *func = llvm::Function::Create(funcType, llvm::Function::ExternalLinkage, functionName, module);
     functions[currFunc] = func;
