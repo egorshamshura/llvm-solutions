@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SimpleLangParserBaseVisitor.h"
+#include <llvm-18/llvm/IR/BasicBlock.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Value.h>
 #include <any>
@@ -27,13 +28,12 @@ struct SimpleLangVisitor : SimpleLangParserBaseVisitor
 private:
     std::map<std::string, std::map<std::string, llvm::Value*>> varsInFuncs;
     std::map<std::string, llvm::Function*> functions;
-    std::vector<std::vector<llvm::Value*>> valuesInBBs;
     std::string currFunc;
     std::string currVarName;
+    llvm::BasicBlock* currEntryBB;
     llvm::LLVMContext *ctxLLVM;
     llvm::IRBuilder<> *builder;
     llvm::Module *module;
-    size_t currentBB;
 
     void generateWhile(hw5::SimpleLangParser::Expr_lineContext *ctx);
 
