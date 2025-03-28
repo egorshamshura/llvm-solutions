@@ -1,0 +1,14 @@
+func max(x y) -> int {
+  if (x < y) {
+    x = y
+  }
+  return x;
+}
+
+func app() -> int {
+  var z = 100;
+  var y = 1111;
+  var maxZY = max(z y);
+  dump(maxZY);
+  return z;
+}

@@ -59,6 +59,8 @@ options { tokenVocab=SimpleLangLexer; }
 
 main: funcDecl+;
 
+
+/* Function declaration */
 funcDecl: FUNC funcName LPAREN funcArgs RPAREN ARROW return_type LCBRACE 
   funcBody 
   RETURN ID SEMICOLON 
@@ -67,19 +69,23 @@ RCBRACE;
 funcName: ID;
 funcArgs: ID*;
 return_type: ID;
+
+/* Function body and expression */
 funcBody: expr;
-
 expr: expr_line*;
-
-expr_line: varDecl
+expr_line: varDecl SEMICOLON
 		| ID EQ primary_expr SEMICOLON
-		| funcCall
+		| funcCall SEMICOLON
+		| RETURN ID SEMICOLON 
 		| WHILE LPAREN cond_expr RPAREN LCBRACE expr RCBRACE
+		| IF LPAREN cond_expr RPAREN LCBRACE expr RCBRACE
 		; 
 
-varDecl: VAR ID EQ primary_expr SEMICOLON;
-funcCall: ID LPAREN funcArgs RPAREN SEMICOLON;
+/* Variable declaration and function call */
+varDecl: VAR ID EQ primary_expr;
+funcCall: ID LPAREN funcArgs RPAREN;
 
+/* Math expression */
 primary_expr:
 	SUB primary_expr
 	| primary_expr (MUL | DIV) primary_expr
@@ -87,9 +93,17 @@ primary_expr:
 	| LPAREN primary_expr RPAREN
 	| INT
 	| ID
-	| ID LPAREN funcArgs RPAREN
+	| funcCall
 	;
 
-cond_expr: ID LESS ID;
+/* Conditional expression */
+cond_expr: 
+	ID LESS ID
+	| ID NOTGREATER ID
+	| ID GREATER ID
+	| ID NOTLESS ID
+	| ID EQUALS ID
+	| ID NOTEQUALS ID
+	;
 
 

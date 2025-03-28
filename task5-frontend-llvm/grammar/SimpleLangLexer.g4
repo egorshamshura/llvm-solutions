@@ -38,13 +38,20 @@ LPAREN: '(';
 RPAREN: ')';
 
 WHILE: 'while';
+IF: 'if';
 
 SUB: '-';
 MUL: '*';
 ADD: '+';
 DIV: '/';
 EQ: '=';
+
 LESS: '<';
+NOTGREATER: '<=';
+GREATER: '>';
+NOTLESS: '>=';
+EQUALS: '==';
+NOTEQUALS: '!=';
 
 
 VAR: 'var';

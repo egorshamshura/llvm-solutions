@@ -24,6 +24,7 @@ struct SimpleLangVisitor : SimpleLangParserBaseVisitor
     std::any visitVarDecl(hw5::SimpleLangParser::VarDeclContext *ctx) override;
     std::any visitFuncCall(hw5::SimpleLangParser::FuncCallContext *ctx) override;
     std::any visitPrimary_expr(hw5::SimpleLangParser::Primary_exprContext *ctx) override;
+    std::any visitCond_expr(hw5::SimpleLangParser::Cond_exprContext *ctx) override;
 
 private:
     std::map<std::string, std::map<std::string, llvm::Value*>> varsInFuncs;
@@ -36,14 +37,6 @@ private:
     llvm::Module *module;
 
     void generateWhile(hw5::SimpleLangParser::Expr_lineContext *ctx);
-
-    template<typename T>
-    llvm::Value* generateFuncCall(T* ctx) {
-        std::vector<llvm::Value*> args;
-        for (size_t arg = 0; arg != ctx->funcArgs()->ID().size(); ++arg) {
-            args.push_back(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][std::string(ctx->funcArgs()->ID(arg)->getText())]));
-        }
-        return static_cast<llvm::Value*>(builder->CreateCall(module->getFunction(ctx->ID()->getText()), args));
-    }
+    void generateIf(hw5::SimpleLangParser::Expr_lineContext *ctx);
 };
 } // hw5 namespace
