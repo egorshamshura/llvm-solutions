@@ -13,7 +13,7 @@
 
 int main()
 {
-    std::ifstream stream("app/app2");
+    std::ifstream stream("app/app3");
     antlr4::ANTLRInputStream input(stream);
 
     hw5::SimpleLangLexer lexer(&input);
@@ -34,12 +34,18 @@ int main()
     llvm::FunctionType *simPutPixelType =
     llvm::FunctionType::get(llvm::Type::getInt32Ty(context), simPutPixelParamTypes, false);
     module->getOrInsertFunction("put_pixel", simPutPixelType);
+
     llvm::ArrayRef<llvm::Type*> simFlushParamTypes = {};
     llvm::FunctionType *simFlushType = llvm::FunctionType::get(llvm::Type::getVoidTy(context), simFlushParamTypes, false);
     module->getOrInsertFunction("flush", simFlushType);
+
     llvm::ArrayRef<llvm::Type*> dumpParamTypes = {llvm::Type::getInt32Ty(context)};
     llvm::FunctionType *dumpType = llvm::FunctionType::get(llvm::Type::getVoidTy(context), dumpParamTypes, false);
     module->getOrInsertFunction("dump", dumpType);
+
+    llvm::FunctionType *simRandType = llvm::FunctionType::get(llvm::Type::getInt32Ty(context), false);
+    module->getOrInsertFunction("rand", simRandType);
+
     llvm::Function* app = std::any_cast<llvm::Function*>(vis.visitMain(tree));
     llvm::outs() << "[LLVM IR]\n";
     module->print(llvm::outs(), nullptr);
@@ -59,6 +65,9 @@ int main()
         }
         if (fnName == "dump") {
             return reinterpret_cast<void *>(dump);
+        }
+        if (fnName == "rand") {
+            return reinterpret_cast<void *>(simRand);
         }
         return nullptr;
     });

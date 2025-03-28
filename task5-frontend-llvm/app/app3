@@ -1,0 +1,86 @@
+func max(x y) -> int {
+  if (x < y) {
+    x = y;
+  }
+  return x;
+}
+
+func app() -> int {
+  var colors = alloc(36);
+  var pixels = alloc(131072);
+  colors[0] = 4278650631;
+  colors[1] = 4280223495;
+  colors[2] = 4281274119;
+  colors[3] = 4282846983;
+  colors[4] = 4283897607;
+  colors[5] = 4284948231;
+  colors[6] = 4285996807;
+  colors[7] = 4287571719;
+  colors[8] = 4288622343;
+  colors[9] = 4289675015;
+  colors[10] = 4290725639;
+  colors[11] = 4291249927;
+  colors[12] = 4292824839;
+  colors[13] = 4292826887;
+  colors[14] = 4292826887;
+  colors[15] = 4292304647;
+  colors[16] = 4292304647;
+  colors[17] = 4292306703;
+  colors[18] = 4291784463;
+  colors[19] = 4291786511;
+  colors[20] = 4291788559;
+  colors[21] = 4291790615;
+  colors[22] = 4291266327;
+  colors[23] = 4291268375;
+  colors[24] = 4291270431;
+  colors[25] = 4290748191;
+  colors[26] = 4290748191;
+  colors[27] = 4290750247;
+  colors[28] = 4290750247;
+  colors[29] = 4290752303;
+  colors[30] = 4290228015;
+  colors[31] = 4290230063;
+  colors[32] = 4290230071;
+  colors[33] = 4291809135;
+  colors[34] = 4292861855;
+  colors[35] = 4293914567;
+  var x = 0;
+  var endX = 512;
+  while (x < endX) {
+    var t = 255 * 512 + x;
+    pixels[t] = 35;
+    var y = 0;
+    var endY = 255;
+    while (y < endY) {
+      var v = y * 512 + x;
+      pixels[v] = 0;
+    }
+  }
+  var step = 0;
+  var endStep = 1;
+  var zero = 0;
+  while (step < endStep) {
+    var x = 0;
+    var endX = 512;
+    while (x < endX) {
+      var y = 1;
+      var endY = 256;
+      while (y < endY) {
+        var rand = rand();
+        var from = y * 512 + x;
+        var to = from - 512 - (rand & 3) + 1;
+        var color_from = pixels[from];
+        if (color_from == zero) {
+          pixels[to] = 0;
+        }
+        if (color_from != zero) {
+          pixels[to] = color_from - ((rand / 2) & rand & 1);
+        }
+        var l = pixels[color_from];
+        put_pixel(x y l);
+      }
+    }
+    flush();
+  }
+  return zero;
+}

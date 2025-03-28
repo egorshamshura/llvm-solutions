@@ -1,6 +1,6 @@
 func max(x y) -> int {
   if (x < y) {
-    x = y
+    x = y;
   }
   return x;
 }
@@ -9,6 +9,10 @@ func app() -> int {
   var z = 100;
   var y = 1111;
   var maxZY = max(z y);
+  var array = alloc(100);
+  array[99] = 30;
+  var z = array[99];
   dump(maxZY);
+  dump(z);
   return z;
 }

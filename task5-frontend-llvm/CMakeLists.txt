@@ -21,7 +21,7 @@ antlr4cpp_process_grammar(demo hw5
   ${CMAKE_CURRENT_SOURCE_DIR}/grammar/SimpleLangParser.g4)
 # include generated files in project environment
 include_directories(${antlr4cpp_include_dirs_hw5})
-message("${antlr4cpp_include_dirs_hw5}")
+message("")
 
 llvm_map_components_to_libnames(
   LLVM_LIBRARIES
@@ -40,7 +40,7 @@ src/lib/*.cpp src/lib/*.h
 src/visitor/*.cpp src/visitor/*.h)
 
 file(GLOB TEST_SRC test/*.cpp)
-add_executable(tests ${TEST_SRC} ${SOLUTION_SRC} ${antlr4cpp_src_files_hw5})
-add_dependencies(tests antlr4cpp antlr4cpp_generation_hw5)
+add_executable(tests ${antlr4cpp_src_files_hw5} ${SOLUTION_SRC} ${TEST_SRC})
+add_dependencies(tests antlr4cpp_generation_hw5 antlr4cpp)
 target_link_libraries(tests PRIVATE ${SDL2_LIBRARIES} ${LLVM_LIBRARIES} antlr4-runtime GTest::gtest GTest::gtest_main) 
 target_include_directories(tests PRIVATE src test ${SDL2_INCLUDE_DIRS} ${LLVM_INCLUDE_DIRS})

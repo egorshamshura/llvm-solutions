@@ -25,18 +25,19 @@ struct SimpleLangVisitor : SimpleLangParserBaseVisitor
     std::any visitFuncCall(hw5::SimpleLangParser::FuncCallContext *ctx) override;
     std::any visitPrimary_expr(hw5::SimpleLangParser::Primary_exprContext *ctx) override;
     std::any visitCond_expr(hw5::SimpleLangParser::Cond_exprContext *ctx) override;
+    std::any visitAllocateArray(hw5::SimpleLangParser::AllocateArrayContext *ctx) override;
+    std::any visitSetElementArray(hw5::SimpleLangParser::SetElementArrayContext *ctx) override;
+    std::any visitGetElementArray(hw5::SimpleLangParser::GetElementArrayContext *ctx) override;
 
 private:
     std::map<std::string, std::map<std::string, llvm::Value*>> varsInFuncs;
     std::map<std::string, llvm::Function*> functions;
     std::string currFunc;
-    std::string currVarName;
     llvm::BasicBlock* currEntryBB;
     llvm::LLVMContext *ctxLLVM;
     llvm::IRBuilder<> *builder;
     llvm::Module *module;
 
-    void generateWhile(hw5::SimpleLangParser::Expr_lineContext *ctx);
-    void generateIf(hw5::SimpleLangParser::Expr_lineContext *ctx);
+    void generateIfOrWhile(hw5::SimpleLangParser::Expr_lineContext *ctx, bool isIf);
 };
 } // hw5 namespace

@@ -49,45 +49,30 @@ std::any hw5::SimpleLangVisitor::visitExpr(hw5::SimpleLangParser::ExprContext *c
     return "";
 }
 
-void hw5::SimpleLangVisitor::generateWhile(hw5::SimpleLangParser::Expr_lineContext *ctx) {
-    llvm::BasicBlock *WhileCondBB = llvm::BasicBlock::Create(*ctxLLVM, "BB", functions[currFunc]);
-    llvm::BasicBlock *WhileBodyBB = llvm::BasicBlock::Create(*ctxLLVM, "BB", functions[currFunc]);
-    llvm::BasicBlock *WhileEndBB = llvm::BasicBlock::Create(*ctxLLVM, "BB", functions[currFunc]);
-    builder->CreateBr(WhileCondBB);
-    builder->SetInsertPoint(WhileCondBB);
-    llvm::Value *Cmp = std::any_cast<llvm::Value*>(visit(ctx->cond_expr()));
-    builder->CreateCondBr(Cmp, WhileBodyBB, WhileEndBB);
-    builder->SetInsertPoint(WhileBodyBB);
-    visit(ctx->expr());
-    builder->CreateBr(WhileCondBB);
-    builder->SetInsertPoint(WhileEndBB);
-}
-
-void hw5::SimpleLangVisitor::generateIf(hw5::SimpleLangParser::Expr_lineContext *ctx) {
-    llvm::BasicBlock *IfCondBB = llvm::BasicBlock::Create(*ctxLLVM, "BB", functions[currFunc]);
-    llvm::BasicBlock *IfBodyBB = llvm::BasicBlock::Create(*ctxLLVM, "BB", functions[currFunc]);
-    llvm::BasicBlock *IfEndBB = llvm::BasicBlock::Create(*ctxLLVM, "BB", functions[currFunc]);
-    builder->CreateBr(IfCondBB);
-    builder->SetInsertPoint(IfCondBB);
+void hw5::SimpleLangVisitor::generateIfOrWhile(hw5::SimpleLangParser::Expr_lineContext *ctx, bool isIf) {
+    llvm::BasicBlock *CondBB = llvm::BasicBlock::Create(*ctxLLVM, "BB", functions[currFunc]);
+    llvm::BasicBlock *BodyBB = llvm::BasicBlock::Create(*ctxLLVM, "BB", functions[currFunc]);
+    llvm::BasicBlock *EndBB = llvm::BasicBlock::Create(*ctxLLVM, "BB", functions[currFunc]);
+    builder->CreateBr(CondBB);
+    builder->SetInsertPoint(CondBB);
     llvm::Value *Cmp = builder->CreateICmpSLT(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->cond_expr()->ID(0)->getText()]), builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->cond_expr()->ID(1)->getText()]));
-    builder->CreateCondBr(Cmp, IfBodyBB, IfEndBB);
-    builder->SetInsertPoint(IfBodyBB);
+    builder->CreateCondBr(Cmp, BodyBB, EndBB);
+    builder->SetInsertPoint(BodyBB);
     visit(ctx->expr());
-    builder->CreateBr(IfEndBB);
-    builder->SetInsertPoint(IfEndBB);
+    builder->CreateBr(isIf ? EndBB : CondBB);
+    builder->SetInsertPoint(EndBB);
 }
 
 std::any hw5::SimpleLangVisitor::visitExpr_line(hw5::SimpleLangParser::Expr_lineContext *ctx)
 {
+    if (ctx->allocateArray()) {
+        visit(ctx->allocateArray());
+    }
+    if (ctx->setElementArray()) {
+        visit(ctx->setElementArray());
+    }
     if (ctx->varDecl()) {
-        std::string varName = ctx->varDecl()->ID()->getText();
-        currVarName = varName;
-        auto x = builder->GetInsertBlock();
-        builder->SetInsertPoint(currEntryBB);
-        llvm::Value *i = builder->CreateAlloca(llvm::Type::getInt32Ty(*ctxLLVM), nullptr);
-        builder->SetInsertPoint(x);
-        varsInFuncs[currFunc][currVarName] = i;
-        builder->CreateStore(std::any_cast<llvm::Value*>(visit(ctx->varDecl()->primary_expr())), i);
+        visit(ctx->varDecl());
     }
     if (ctx->ID()) {
         builder->CreateStore(std::any_cast<llvm::Value*>(visit(ctx->primary_expr())), varsInFuncs[currFunc][ctx->ID()->getText()]);
@@ -95,10 +80,10 @@ std::any hw5::SimpleLangVisitor::visitExpr_line(hw5::SimpleLangParser::Expr_line
     if (ctx->funcCall())
         visit(ctx->funcCall());
     if (ctx->IF()) {
-        generateIf(ctx);
+        generateIfOrWhile(ctx, true);
     }
     if (ctx->WHILE()) {    
-        generateWhile(ctx);    
+        generateIfOrWhile(ctx, false);    
     }
     if (ctx->RETURN()) {
         builder->CreateRet(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->ID()->getText()]));
@@ -108,8 +93,14 @@ std::any hw5::SimpleLangVisitor::visitExpr_line(hw5::SimpleLangParser::Expr_line
 
 std::any hw5::SimpleLangVisitor::visitVarDecl(hw5::SimpleLangParser::VarDeclContext *ctx)
 {
-    varsInFuncs[currFunc][currVarName] = std::any_cast<llvm::Value*>(visit(ctx->primary_expr()));
-    return varsInFuncs[currFunc][currVarName];
+    std::string varName = ctx->ID()->getText();
+    auto x = builder->GetInsertBlock();
+    builder->SetInsertPoint(currEntryBB);
+    llvm::Value *i = builder->CreateAlloca(llvm::Type::getInt32Ty(*ctxLLVM), nullptr);
+    builder->SetInsertPoint(x);
+    varsInFuncs[currFunc][varName] = i;
+    builder->CreateStore(std::any_cast<llvm::Value*>(visit(ctx->primary_expr())), i);
+    return varsInFuncs[currFunc][varName];
 }
 
 std::any hw5::SimpleLangVisitor::visitFuncCall(hw5::SimpleLangParser::FuncCallContext *ctx)
@@ -123,8 +114,11 @@ std::any hw5::SimpleLangVisitor::visitFuncCall(hw5::SimpleLangParser::FuncCallCo
 
 std::any hw5::SimpleLangVisitor::visitPrimary_expr(hw5::SimpleLangParser::Primary_exprContext *ctx)
 {
+    if (ctx->getElementArray()) {
+        return visit(ctx->getElementArray());
+    }
     if (ctx->INT()) {
-        return static_cast<llvm::Value*>(llvm::ConstantInt::get(llvm::Type::getInt32Ty(*ctxLLVM), std::stoi(ctx->INT()->getText())));
+        return static_cast<llvm::Value*>(llvm::ConstantInt::get(llvm::Type::getInt32Ty(*ctxLLVM), std::stoll(ctx->INT()->getText())));
     }
     if (ctx->ID()) {
         return static_cast<llvm::Value*>(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->ID()->getText()]));
@@ -143,6 +137,9 @@ std::any hw5::SimpleLangVisitor::visitPrimary_expr(hw5::SimpleLangParser::Primar
     }
     if (ctx->SUB() && ctx->primary_expr().size() == 2) {
         return static_cast<llvm::Value*>(builder->CreateSub(std::any_cast<llvm::Value*>(visit(ctx->primary_expr(0))), std::any_cast<llvm::Value*>(visit(ctx->primary_expr(1)))));
+    }
+    if (ctx->AND()) {
+        return static_cast<llvm::Value*>(builder->CreateAnd(std::any_cast<llvm::Value*>(visit(ctx->primary_expr(0))), std::any_cast<llvm::Value*>(visit(ctx->primary_expr(1)))));
     }
     return static_cast<llvm::Value*>(builder->CreateNeg(std::any_cast<llvm::Value*>(visit(ctx->primary_expr(0)))));
 }
@@ -166,4 +163,42 @@ std::any hw5::SimpleLangVisitor::visitCond_expr(hw5::SimpleLangParser::Cond_expr
         return static_cast<llvm::Value*>(builder->CreateICmpEQ(loaded1, loaded2));
     }
     return static_cast<llvm::Value*>(builder->CreateICmpNE(loaded1, loaded2));
+}
+
+std::any hw5::SimpleLangVisitor::visitAllocateArray(hw5::SimpleLangParser::AllocateArrayContext *ctx) {
+    std::string varName = ctx->ID()->getText();
+    auto x = builder->GetInsertBlock();
+    builder->SetInsertPoint(currEntryBB);
+    llvm::Value *i = builder->CreateAlloca(llvm::Type::getInt32Ty(*ctxLLVM), builder->getInt32(std::stoi(ctx->INT()->getText())));
+    builder->SetInsertPoint(x);
+    varsInFuncs[currFunc][varName] = i;
+    return varsInFuncs[currFunc][varName];
+}
+
+std::any hw5::SimpleLangVisitor::visitSetElementArray(hw5::SimpleLangParser::SetElementArrayContext *ctx) {
+    std::string varName = ctx->ID(0)->getText();
+    llvm::Value* loaded = std::any_cast<llvm::Value*>(visit(ctx->primary_expr()));
+    llvm::Value* indexValue;
+    if (ctx->INT()) {
+        int index = std::stoi(ctx->INT()->getText());
+        indexValue = builder->getInt64(index);
+    } else {
+        indexValue = builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->ID(1)->getText()]);
+    }
+    llvm::Value* final_ptr = builder->CreateGEP(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][varName], indexValue);
+    return builder->CreateStore(loaded, final_ptr);
+}
+
+std::any hw5::SimpleLangVisitor::visitGetElementArray(hw5::SimpleLangParser::GetElementArrayContext *ctx) {
+    std::string varName = ctx->ID(0)->getText();
+    llvm::Value* indexValue;
+    if (ctx->INT()) {
+        int index = std::stoi(ctx->INT()->getText());
+        indexValue = builder->getInt64(index);
+    } else {
+        indexValue = builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->ID(1)->getText()]);
+    }
+    llvm::Value* final_ptr = builder->CreateGEP(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][varName], indexValue);
+    
+    return static_cast<llvm::Value*>(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), final_ptr));
 }

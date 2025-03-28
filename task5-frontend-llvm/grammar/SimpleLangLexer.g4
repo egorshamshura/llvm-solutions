@@ -36,15 +36,8 @@ LCBRACE: '{';
 RCBRACE: '}';
 LPAREN: '(';
 RPAREN: ')';
-
-WHILE: 'while';
-IF: 'if';
-
-SUB: '-';
-MUL: '*';
-ADD: '+';
-DIV: '/';
-EQ: '=';
+LBRACKET: '[';
+RBRACKET: ']';
 
 LESS: '<';
 NOTGREATER: '<=';
@@ -52,6 +45,17 @@ GREATER: '>';
 NOTLESS: '>=';
 EQUALS: '==';
 NOTEQUALS: '!=';
+
+WHILE: 'while';
+IF: 'if';
+ALLOC: 'alloc';
+
+SUB: '-';
+MUL: '*';
+ADD: '+';
+DIV: '/';
+AND: '&';
+EQ: '=';
 
 
 VAR: 'var';

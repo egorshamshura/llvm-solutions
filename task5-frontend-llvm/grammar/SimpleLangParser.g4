@@ -79,6 +79,8 @@ expr_line: varDecl SEMICOLON
 		| RETURN ID SEMICOLON 
 		| WHILE LPAREN cond_expr RPAREN LCBRACE expr RCBRACE
 		| IF LPAREN cond_expr RPAREN LCBRACE expr RCBRACE
+		| allocateArray SEMICOLON
+		| setElementArray SEMICOLON
 		; 
 
 /* Variable declaration and function call */
@@ -90,9 +92,11 @@ primary_expr:
 	SUB primary_expr
 	| primary_expr (MUL | DIV) primary_expr
 	| primary_expr (ADD | SUB) primary_expr
+	| primary_expr AND primary_expr
 	| LPAREN primary_expr RPAREN
 	| INT
 	| ID
+	| getElementArray
 	| funcCall
 	;
 
@@ -106,4 +110,8 @@ cond_expr:
 	| ID NOTEQUALS ID
 	;
 
+/* Array support */
 
+allocateArray: VAR ID EQ ALLOC LPAREN INT RPAREN;
+setElementArray: ID LBRACKET (ID | INT) RBRACKET EQ primary_expr;
+getElementArray: ID LBRACKET (ID | INT) RBRACKET;

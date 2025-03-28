@@ -25,7 +25,6 @@ func app() -> int {
 		}
 		flush();
 		step = step + 1;
-		dump(step);
 	}
 	var res = 0;
 	return res;
