@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SimpleLangParserBaseVisitor.h"
-#include <llvm-18/llvm/IR/BasicBlock.h>
+#include <llvm/IR/BasicBlock.h>
 #include <llvm/IR/IRBuilder.h>
 #include <llvm/IR/Value.h>
 #include <any>
