@@ -29,20 +29,20 @@ int main()
     llvm::Module *module = new llvm::Module("app.c", context);
     hw5::SimpleLangVisitor vis(&context, &builder, module);
 
-    llvm::ArrayRef<llvm::Type*> simPutPixelParamTypes = {llvm::Type::getInt32Ty(context), llvm::Type::getInt32Ty(context), llvm::Type::getInt32Ty(context)};
+    llvm::ArrayRef<llvm::Type*> simPutPixelParamTypes = {llvm::Type::getInt64Ty(context), llvm::Type::getInt64Ty(context), llvm::Type::getInt64Ty(context)};
     llvm::FunctionType *simPutPixelType =
-    llvm::FunctionType::get(llvm::Type::getInt32Ty(context), simPutPixelParamTypes, false);
+    llvm::FunctionType::get(llvm::Type::getInt64Ty(context), simPutPixelParamTypes, false);
     module->getOrInsertFunction("put_pixel", simPutPixelType);
 
     llvm::ArrayRef<llvm::Type*> simFlushParamTypes = {};
     llvm::FunctionType *simFlushType = llvm::FunctionType::get(llvm::Type::getVoidTy(context), simFlushParamTypes, false);
     module->getOrInsertFunction("flush", simFlushType);
 
-    llvm::ArrayRef<llvm::Type*> dumpParamTypes = {llvm::Type::getInt32Ty(context)};
+    llvm::ArrayRef<llvm::Type*> dumpParamTypes = {llvm::Type::getInt64Ty(context)};
     llvm::FunctionType *dumpType = llvm::FunctionType::get(llvm::Type::getVoidTy(context), dumpParamTypes, false);
     module->getOrInsertFunction("dump", dumpType);
 
-    llvm::FunctionType *simRandType = llvm::FunctionType::get(llvm::Type::getInt32Ty(context), false);
+    llvm::FunctionType *simRandType = llvm::FunctionType::get(llvm::Type::getInt64Ty(context), false);
     module->getOrInsertFunction("rand", simRandType);
 
     llvm::Function* app = std::any_cast<llvm::Function*>(vis.visitMain(tree));
