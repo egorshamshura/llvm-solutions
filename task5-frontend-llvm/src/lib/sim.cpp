@@ -63,5 +63,5 @@ int simRand() {
 }
 
 void dump(long long x) {
-  llvm::outs() << x;
+  llvm::outs() << x << "\n";
 }

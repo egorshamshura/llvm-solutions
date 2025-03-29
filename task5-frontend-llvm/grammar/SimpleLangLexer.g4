@@ -39,12 +39,12 @@ RPAREN: ')';
 LBRACKET: '[';
 RBRACKET: ']';
 
+NOTEQUALS: '!=';
 LESS: '<';
 NOTGREATER: '<=';
 GREATER: '>';
 NOTLESS: '>=';
 EQUALS: '==';
-NOTEQUALS: '!=';
 
 WHILE: 'while';
 IF: 'if';

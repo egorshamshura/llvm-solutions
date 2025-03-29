@@ -55,7 +55,7 @@ void hw5::SimpleLangVisitor::generateIfOrWhile(hw5::SimpleLangParser::Expr_lineC
     llvm::BasicBlock *EndBB = llvm::BasicBlock::Create(*ctxLLVM, "BB", functions[currFunc]);
     builder->CreateBr(CondBB);
     builder->SetInsertPoint(CondBB);
-    llvm::Value *Cmp = builder->CreateICmpSLT(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->cond_expr()->ID(0)->getText()]), builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->cond_expr()->ID(1)->getText()]));
+    llvm::Value *Cmp = std::any_cast<llvm::Value*>(visit(ctx->cond_expr()));
     builder->CreateCondBr(Cmp, BodyBB, EndBB);
     builder->SetInsertPoint(BodyBB);
     visit(ctx->expr());

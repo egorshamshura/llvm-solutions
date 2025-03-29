@@ -24,7 +24,6 @@ int main()
     hw5::SimpleLangParser parser(&tokens);
 
     hw5::SimpleLangParser::MainContext* tree = parser.main();
-
     llvm::LLVMContext context;
     llvm::IRBuilder<> builder(context);
     llvm::Module *module = new llvm::Module("app.c", context);
