@@ -8,6 +8,8 @@ func max(x y) -> int {
 func app() -> int {
   var pallete = alloc(36);
   var colors = alloc(131072);
+  var zero = 0;
+  dump(zero);
   pallete[0] = 4278650631;
   pallete[1] = 4280223495;
   pallete[2] = 4281274119;
@@ -44,6 +46,7 @@ func app() -> int {
   pallete[33] = 4291809135;
   pallete[34] = 4292861855;
   pallete[35] = 4293914567;
+  dump(zero);
   var x = 0;
   var endX = 512;
   while (x < endX) {
@@ -58,9 +61,9 @@ func app() -> int {
     }
     x = x + 1;
   }
+  dump(zero);
   var step = 0;
   var endStep = 1;
-  var zero = 0;
   while (step < endStep) {
     var x = 0;
     var endX = 512;

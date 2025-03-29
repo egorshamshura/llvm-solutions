@@ -169,7 +169,7 @@ std::any hw5::SimpleLangVisitor::visitAllocateArray(hw5::SimpleLangParser::Alloc
     std::string varName = ctx->ID()->getText();
     auto x = builder->GetInsertBlock();
     builder->SetInsertPoint(currEntryBB);
-    llvm::Value *i = builder->CreateAlloca(llvm::Type::getInt64Ty(*ctxLLVM), builder->getInt64(std::stoi(ctx->INT()->getText())));
+    llvm::Value *i = builder->CreateAlloca(llvm::Type::getInt8Ty(*ctxLLVM), builder->getInt64(std::stoi(ctx->INT()->getText()) * 8));
     builder->SetInsertPoint(x);
     varsInFuncs[currFunc][varName] = i;
     return varsInFuncs[currFunc][varName];
@@ -185,8 +185,8 @@ std::any hw5::SimpleLangVisitor::visitSetElementArray(hw5::SimpleLangParser::Set
     } else {
         indexValue = builder->CreateLoad(llvm::Type::getInt64Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->ID(1)->getText()]);
     }
-    llvm::Value* final_ptr = builder->CreateGEP(llvm::Type::getInt64Ty(*ctxLLVM), varsInFuncs[currFunc][varName], indexValue);
-    return builder->CreateStore(loaded, final_ptr);
+    llvm::Value* final_ptr = builder->CreateGEP(llvm::Type::getInt8Ty(*ctxLLVM), varsInFuncs[currFunc][varName], builder->CreateMul(indexValue, builder->getInt64(8)));
+    return builder->CreateStore(loaded, builder->CreateIntToPtr(final_ptr, builder->getInt8Ty()->getPointerTo()));
 }
 
 std::any hw5::SimpleLangVisitor::visitGetElementArray(hw5::SimpleLangParser::GetElementArrayContext *ctx) {
@@ -198,7 +198,7 @@ std::any hw5::SimpleLangVisitor::visitGetElementArray(hw5::SimpleLangParser::Get
     } else {
         indexValue = builder->CreateLoad(llvm::Type::getInt64Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->ID(1)->getText()]);
     }
-    llvm::Value* final_ptr = builder->CreateGEP(llvm::Type::getInt64Ty(*ctxLLVM), varsInFuncs[currFunc][varName], indexValue);
-    
-    return static_cast<llvm::Value*>(builder->CreateLoad(llvm::Type::getInt64Ty(*ctxLLVM), final_ptr));
+    llvm::Value* final_ptr = builder->CreateGEP(llvm::Type::getInt8Ty(*ctxLLVM), varsInFuncs[currFunc][varName], builder->CreateMul(indexValue, builder->getInt64(8)));
+
+    return static_cast<llvm::Value*>(builder->CreateLoad(llvm::Type::getInt64Ty(*ctxLLVM), builder->CreateIntToPtr(final_ptr, builder->getInt8Ty()->getPointerTo())));
 }
