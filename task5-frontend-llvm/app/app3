@@ -54,7 +54,9 @@ func app() -> int {
     while (y < endY) {
       var v = y * 512 + x;
       pixels[v] = 0;
+      y = y + 1;
     }
+    x = x + 1;
   }
   var step = 0;
   var endStep = 1;
@@ -76,9 +78,11 @@ func app() -> int {
         if (color_from != zero) {
           pixels[to] = color_from - ((rand / 2) & rand & 1);
         }
-        var l = pixels[color_from];
+        var l = colors[color_from];
         put_pixel(x y l);
+        y = y + 1;
       }
+      x = x + 1;
     }
     flush();
   }
