@@ -5,11 +5,18 @@ func max(x y) -> int {
   return x;
 }
 
+func abs(x) -> int {
+  var zero = 0;
+  if (x < zero) {
+    x = -1 * x;
+  }
+  return x;
+}
+
 func app() -> int {
   var pallete = alloc(36);
   var colors = alloc(131072);
   var zero = 0;
-  dump(zero);
   pallete[0] = 4278650631;
   pallete[1] = 4280223495;
   pallete[2] = 4281274119;
@@ -46,7 +53,7 @@ func app() -> int {
   pallete[33] = 4291809135;
   pallete[34] = 4292861855;
   pallete[35] = 4293914567;
-  dump(zero);
+  var palleteSize = 36;
   var x = 0;
   var endX = 512;
   while (x < endX) {
@@ -61,7 +68,6 @@ func app() -> int {
     }
     x = x + 1;
   }
-  dump(zero);
   var step = 0;
   var endStep = 1;
   while (step < endStep) {
@@ -74,15 +80,17 @@ func app() -> int {
         var rand = rand();
         var from = y * 512 + x;
         var to = from - 512 - (rand & 3) + 1;
-        var z = colors[to];
         var color_from = colors[from];
         if (color_from == zero) {
           colors[to] = 0;
         }
+        var z = colors[to];
         if (color_from != zero) {
-          colors[to] = color_from - (((rand / 2) & rand & 1) + 1);
+          var xxx = ((rand / 2) & rand & 1);
+          colors[to] = color_from - xxx;
         }
         var l = pallete[color_from];
+        dump(color_from);
         put_pixel(x y l);
         y = y + 1;
       }

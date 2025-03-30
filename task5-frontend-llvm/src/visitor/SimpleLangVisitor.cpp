@@ -116,23 +116,17 @@ std::any hw5::SimpleLangVisitor::visitPrimary_expr(hw5::SimpleLangParser::Primar
 {
     if (ctx->getElementArray()) {
         return visit(ctx->getElementArray());
-    }
-    if (ctx->INT()) {
+    } else if (ctx->INT()) {
         return static_cast<llvm::Value*>(llvm::ConstantInt::get(llvm::Type::getInt64Ty(*ctxLLVM), std::stoll(ctx->INT()->getText())));
-    }
-    if (ctx->ID()) {
+    } else if (ctx->ID()) {
         return static_cast<llvm::Value*>(builder->CreateLoad(llvm::Type::getInt64Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->ID()->getText()]));
-    }
-    if (ctx->funcCall()) {
+    } else if (ctx->funcCall()) {
         return visit(ctx->funcCall());
-    }
-    if (ctx->MUL() && ctx->primary_expr().size() == 2) {
+    } else if (ctx->MUL() && ctx->primary_expr().size() == 2) {
         return static_cast<llvm::Value*>(builder->CreateMul(std::any_cast<llvm::Value*>(visit(ctx->primary_expr(0))), std::any_cast<llvm::Value*>(visit(ctx->primary_expr(1)))));
-    }
-    if (ctx->DIV()) {
-        return static_cast<llvm::Value*>(builder->CreateSDiv(std::any_cast<llvm::Value*>(visit(ctx->primary_expr(0))), std::any_cast<llvm::Value*>(visit(ctx->primary_expr(1)))));
-    }
-    if (ctx->ADD()) {
+    } else if (ctx->DIV()) {
+        return static_cast<llvm::Value*>(builder->CreateUDiv(std::any_cast<llvm::Value*>(visit(ctx->primary_expr(0))), std::any_cast<llvm::Value*>(visit(ctx->primary_expr(1)))));
+    } else if (ctx->ADD()) {
         return static_cast<llvm::Value*>(builder->CreateAdd(std::any_cast<llvm::Value*>(visit(ctx->primary_expr(0))), std::any_cast<llvm::Value*>(visit(ctx->primary_expr(1)))));
     }
     if (ctx->SUB() && ctx->primary_expr().size() == 2) {
@@ -140,6 +134,9 @@ std::any hw5::SimpleLangVisitor::visitPrimary_expr(hw5::SimpleLangParser::Primar
     }
     if (ctx->AND()) {
         return static_cast<llvm::Value*>(builder->CreateAnd(std::any_cast<llvm::Value*>(visit(ctx->primary_expr(0))), std::any_cast<llvm::Value*>(visit(ctx->primary_expr(1)))));
+    }
+    if (ctx->LPAREN()) {
+        return std::any_cast<llvm::Value*>(visit(ctx->primary_expr(0)));
     }
     return static_cast<llvm::Value*>(builder->CreateNeg(std::any_cast<llvm::Value*>(visit(ctx->primary_expr(0)))));
 }

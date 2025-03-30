@@ -90,8 +90,10 @@ funcCall: ID LPAREN funcArgs RPAREN;
 /* Math expression */
 primary_expr:
 	SUB primary_expr
-	| primary_expr (MUL | DIV) primary_expr
-	| primary_expr (ADD | SUB) primary_expr
+	| primary_expr MUL primary_expr
+	| primary_expr DIV primary_expr
+	| primary_expr ADD primary_expr
+	| primary_expr SUB primary_expr
 	| primary_expr AND primary_expr
 	| LPAREN primary_expr RPAREN
 	| INT

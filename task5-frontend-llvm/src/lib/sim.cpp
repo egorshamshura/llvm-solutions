@@ -1,5 +1,6 @@
 #include "sim.h"
 
+#include <limits>
 #include <SDL2/SDL.h>
 #include <assert.h>
 #include <llvm/Support/raw_ostream.h>
@@ -64,4 +65,8 @@ int simRand() {
 
 void dump(long long x) {
   llvm::outs() << x << "\n";
+}
+
+void putPixel(long long x, long long y, long long argb) {
+  simPutPixel(x, y, argb & std::numeric_limits<int>::min());
 }

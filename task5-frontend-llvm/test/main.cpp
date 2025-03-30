@@ -24,6 +24,7 @@ int main()
     hw5::SimpleLangParser parser(&tokens);
 
     hw5::SimpleLangParser::MainContext* tree = parser.main();
+    llvm::outs() << tree->toStringTree(&parser) << "\n";
     llvm::LLVMContext context;
     llvm::IRBuilder<> builder(context);
     llvm::Module *module = new llvm::Module("app.c", context);
@@ -57,7 +58,7 @@ int main()
     llvm::ExecutionEngine *ee = llvm::EngineBuilder(std::unique_ptr<llvm::Module>(module)).create();
     ee->InstallLazyFunctionCreator([=](const std::string &fnName) -> void * {
         if (fnName == "put_pixel") {
-            return reinterpret_cast<void *>(simPutPixel);
+            return reinterpret_cast<void *>(putPixel);
         }
         if (fnName == "flush") {
             return reinterpret_cast<void *>(simFlush);
