@@ -90,7 +90,10 @@ func app() -> int {
           colors[to] = color_from - xxx;
         }
         var l = pallete[color_from];
-        dump(color_from);
+        var nn = 4278650631;
+        if (l != nn) {
+          dump(l);
+        }
         put_pixel(x y l);
         y = y + 1;
       }
