@@ -13,11 +13,26 @@ func abs(x) -> int {
   return x;
 }
 
+func test(actual expected) -> int {
+  var result = 1;
+  if (actual != expected) {
+    result = 0;
+    dump(actual);
+  }
+  return result;
+}
+
 func app() -> int {
-  var pallete = alloc(36);
   var colors = alloc(131072);
+  var pallete = alloc(36);
   var zero = 0;
+  var laplas = 0;
+  var expected = 0;
+  var actual = 0;
   pallete[0] = 4278650631;
+  actual = pallete[0];
+  expected = 4278650631;
+  laplas = test(actual expected);
   pallete[1] = 4280223495;
   pallete[2] = 4281274119;
   pallete[3] = 4282846983;
@@ -27,6 +42,9 @@ func app() -> int {
   pallete[7] = 4287571719;
   pallete[8] = 4288622343;
   pallete[9] = 4289675015;
+  actual = pallete[9];
+  expected = 4289675015;
+  laplas = test(actual expected);
   pallete[10] = 4290725639;
   pallete[11] = 4291249927;
   pallete[12] = 4292824839;
@@ -52,6 +70,7 @@ func app() -> int {
   pallete[32] = 4290230071;
   pallete[33] = 4291809135;
   pallete[34] = 4292861855;
+  var ooo = 4292861855;
   pallete[35] = 4293914567;
   var palleteSize = 36;
   var x = 0;
@@ -80,21 +99,17 @@ func app() -> int {
         var rand = rand();
         var from = y * 512 + x;
         var to = from - 512 - (rand & 3) + 1;
-        var color_from = colors[from];
-        if (color_from == zero) {
+        var colorFrom = colors[from];
+        if (colorFrom == zero) {
           colors[to] = 0;
         }
         var z = colors[to];
-        if (color_from != zero) {
+        if (colorFrom != zero) {
           var xxx = ((rand / 2) & rand & 1);
-          colors[to] = color_from - xxx;
+          colors[to] = colorFrom - xxx;
         }
-        var l = pallete[color_from];
-        var nn = 4278650631;
-        if (l != nn) {
-          dump(color_from);
-        }
-        put_pixel(x y l);
+        var toColor = pallete[colorFrom];
+        put_pixel(x y toColor);
         y = y + 1;
       }
       x = x + 1;
