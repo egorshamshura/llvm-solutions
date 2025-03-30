@@ -182,7 +182,7 @@ std::any hw5::SimpleLangVisitor::visitSetElementArray(hw5::SimpleLangParser::Set
     } else {
         indexValue = builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->ID(1)->getText()]);
     }
-    llvm::Value* final_ptr = builder->CreateGEP(llvm::Type::getInt8Ty(*ctxLLVM), varsInFuncs[currFunc][varName], builder->CreateMul(indexValue, builder->getInt32(8)));
+    llvm::Value* final_ptr = builder->CreateGEP(llvm::Type::getInt8Ty(*ctxLLVM), varsInFuncs[currFunc][varName], builder->CreateMul(indexValue, builder->getInt32(4)));
     return builder->CreateStore(loaded, builder->CreateIntToPtr(final_ptr, builder->getInt8Ty()->getPointerTo()));
 }
 
@@ -195,7 +195,7 @@ std::any hw5::SimpleLangVisitor::visitGetElementArray(hw5::SimpleLangParser::Get
     } else {
         indexValue = builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), varsInFuncs[currFunc][ctx->ID(1)->getText()]);
     }
-    llvm::Value* final_ptr = builder->CreateGEP(llvm::Type::getInt8Ty(*ctxLLVM), varsInFuncs[currFunc][varName], builder->CreateMul(indexValue, builder->getInt32(8)));
+    llvm::Value* final_ptr = builder->CreateGEP(llvm::Type::getInt8Ty(*ctxLLVM), varsInFuncs[currFunc][varName], builder->CreateMul(indexValue, builder->getInt32(4)));
 
     return static_cast<llvm::Value*>(builder->CreateLoad(llvm::Type::getInt32Ty(*ctxLLVM), builder->CreateIntToPtr(final_ptr, builder->getInt8Ty()->getPointerTo())));
 }

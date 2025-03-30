@@ -92,7 +92,7 @@ func app() -> int {
         var l = pallete[color_from];
         var nn = 4278650631;
         if (l != nn) {
-          dump(l);
+          dump(color_from);
         }
         put_pixel(x y l);
         y = y + 1;
