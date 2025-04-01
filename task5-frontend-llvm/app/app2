@@ -7,7 +7,7 @@ func max(x y) -> int {
 
 func app() -> int {
   var z = 100;
-  var y = 1111;
+  var y = 11111;
   var maxZY = max(z y);
   var array = alloc(100);
   array[99] = 30;
